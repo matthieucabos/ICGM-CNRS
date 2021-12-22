@@ -17,22 +17,22 @@ ________________________________________________________________________________
 
 ## Summary
 
-[**Cisco2.sh**](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/SNMP#cisco2sh)
+[1/ Cisco2.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#cisco2sh)
 
-[**Cisco2Socket.py**](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/SNMP#cisco2socketpy)
+[2/ Cisco2Socket.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#cisco2socketpy)
 
-[**Cisco2Socket2.py**](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/SNMP#cisco2socket2py)
+[3/ Cisco2Socket2.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#cisco2socket2py)
 
-[**Get10GSocket.sh**](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/SNMP#get10gsocketsh)
+[4/ Get10GSocket.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#get10gsocketsh)
 
-[**Script_sheduler.sh**](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/SNMP#script_shedulersh)
+[5/ Script_sheduler.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#script_shedulersh)
 
-[**Script_sheduler2.sh**](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/SNMP#script_sheduler2sh)
+[6/ Script_sheduler2.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#script_sheduler2sh)
 
-[**Switch_info_getter.py**](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/SNMP#switch_info_getterpy)
+[7/ Switch_info_getter.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#switch_info_getterpy)
 
+[8/ Support](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#support)
 
-*******************************************
 
 ## Cisco2.sh
 
@@ -51,7 +51,7 @@ where :
   * **1** : Get the Gigabit Interface from the Cisco Port Number
   * **2** : Get the Cisco Port Number from the Gigabit triolet
 
-*******************************************
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#snmp)
 
 ## Cisco2Socket.py
 
@@ -66,7 +66,7 @@ where **Switch Cisco Name** is the exact Name of the Cisco Switch to analyse.
 
 The following input is the Socket name (with form N1A01-01) and the output is a Cisco Gigabit triolet with form 1/0/11
 
-*******************************************
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#snmp)
 
 ## Cisco2Socket2.py
 
@@ -85,7 +85,7 @@ where :
 
 It give a List containing all the Room Socket Exact Name
 
-*******************************************
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#snmp)
 
 ## Get10GSocket.sh
 
@@ -108,7 +108,7 @@ The associated graph .png will appear in the current folder with its associated 
 
 The standard number of samples value for this script is arround 200.
 
-*******************************************
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#snmp)
 
 ## Script_sheduler.sh
 
@@ -129,7 +129,7 @@ It will get **Number of samples** point values and update Round Robin Archive an
 
 The standard number of samples value for this script is arround 200.
 
-*******************************************
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#snmp)
 
 ## Script_sheduler2.sh
 
@@ -150,7 +150,7 @@ It will get **Number of samples** point values and update Round Robin Archive an
 
 The standard number of samples value for this script is arround 200.
 
-*******************************************
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#snmp)
 
 ## Switch_info_getter.py
 
@@ -169,8 +169,7 @@ python3 Switch _info_getter.py <@IP of the switch>
 
 Where the parameter is the IP of the switch to analyse.
 
-
-*******************************************
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/SNMP#snmp)
 
 ## Support
 
