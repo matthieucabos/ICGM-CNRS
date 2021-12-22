@@ -131,6 +131,8 @@ find_first_avaible_ip(vLan)
 Read the DHCP configuration file to build an ip2MAC adresses dictionnary.
 Once done, it will restitute the builded dictionnary.
 
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
+
 ## Sort_ods_table.py
 
 This script has been written to sort already populated Ods table files.
