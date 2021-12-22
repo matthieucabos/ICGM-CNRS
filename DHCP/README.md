@@ -47,7 +47,7 @@ Once each of these values informed, the dhcp configuration file is readed and th
 This script has been written for and uniquely for the ICGM-CNRS laboratory, the list of Cisco Switch is associated to this laboratory.
 To make it work in others Organisations, you have to adapt the Cisco List to your own Switchs Architecture.
 
-[*Summary*](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
 
 ## ods2dhcp_guest.py
 
@@ -83,6 +83,8 @@ Please to use with the correct syntax and associated files as below :
 ```bash
 python3 ods2dhcp_guest.py
 ```
+
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
 
 ## Ods_conf.py
 
@@ -144,6 +146,8 @@ Where:
 * **dest_name_file** : Designate the .ods destination file name to write
 * **column_to_sort** : Designate the Column considered as Sorter Reference
 
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
+
 ## verifiy_ip.py
 
 This script read the DHCP Configuration files and search for any Values Duplication as IP @ and MAC @.
@@ -153,6 +157,8 @@ Please to use with the following syntax directely into your DHCP configuration F
 ```bash
 python3 verifiy_ip.py
 ```
+
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
 
 It returns the number of duplication, if founded
 
