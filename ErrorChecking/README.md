@@ -18,8 +18,8 @@ I've been writing these Scripts for the Network Administration and Installation 
 ## Summary
 
 This repository contain 2 main projects :
-  * [**Script_del_block_user.py**](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/ErrorChecking#script_del_block_userpy) : Get on the *Cisco Network* all the err-disable Errors Sockets and solve it keeping a Trace.
-  * [**Get_ThresholdExceeded.sh**](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/ErrorChecking#get_thresholdexceededsh) : Get on the *Network monitor ssh server* the threshold exceeded errors and return the associated Hardware Sockets.
+  * [**Script_del_block_user.py**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/ErrorChecking#script_del_block_userpy) : Get on the *Cisco Network* all the err-disable Errors Sockets and solve it keeping a Trace.
+  * [**Get_ThresholdExceeded.sh**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/ErrorChecking#get_thresholdexceededsh) : Get on the *Network monitor ssh server* the threshold exceeded errors and return the associated Hardware Sockets.
 
 ***************************
 
@@ -62,6 +62,8 @@ Please to use with the correct syntax :
 python3 Script_del_block_userv3.py <nb_threads>
 ```
 
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/ErrorChecking#cisco-error-checking)
+
 ## Get_ThresholdExceeded.sh
 
 This script has been written to detect on a Network Monitor all the highThresholdExceeded Errors and get the exact associated Sockets Name
@@ -74,6 +76,8 @@ To Use, please to respect the following syntax :
 The Results are stored into the **Sockets.txt** File.
 
 Please to ensure have the correct rights of connexion into the monitor to Use it.
+
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/ErrorChecking#cisco-error-checking)
 
 ***************************
 
