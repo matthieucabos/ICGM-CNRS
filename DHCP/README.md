@@ -47,6 +47,8 @@ Once each of these values informed, the dhcp configuration file is readed and th
 This script has been written for and uniquely for the ICGM-CNRS laboratory, the list of Cisco Switch is associated to this laboratory.
 To make it work in others Organisations, you have to adapt the Cisco List to your own Switchs Architecture.
 
+[*Summary*](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
+
 ## ods2dhcp_guest.py
 
 This script was written to meet the requirements of a Guest subnet in a science lab (ICGM-CNRS).
