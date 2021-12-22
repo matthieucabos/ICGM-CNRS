@@ -47,7 +47,7 @@ Once each of these values informed, the dhcp configuration file is readed and th
 This script has been written for and uniquely for the ICGM-CNRS laboratory, the list of Cisco Switch is associated to this laboratory.
 To make it work in others Organisations, you have to adapt the Cisco List to your own Switchs Architecture.
 
-[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#dhcp)
 
 ## ods2dhcp_guest.py
 
@@ -84,7 +84,7 @@ Please to use with the correct syntax and associated files as below :
 python3 ods2dhcp_guest.py
 ```
 
-[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#dhcp)
 
 ## Ods_conf.py
 
@@ -131,7 +131,7 @@ find_first_avaible_ip(vLan)
 Read the DHCP configuration file to build an ip2MAC adresses dictionnary.
 Once done, it will restitute the builded dictionnary.
 
-[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#dhcp)
 
 ## Sort_ods_table.py
 
@@ -148,7 +148,7 @@ Where:
 * **dest_name_file** : Designate the .ods destination file name to write
 * **column_to_sort** : Designate the Column considered as Sorter Reference
 
-[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#dhcp)
 
 ## verifiy_ip.py
 
@@ -160,7 +160,7 @@ Please to use with the following syntax directely into your DHCP configuration F
 python3 verifiy_ip.py
 ```
 
-[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#summary)
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#dhcp)
 
 It returns the number of duplication, if founded
 
