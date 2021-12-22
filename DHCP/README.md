@@ -16,17 +16,17 @@ I've been writing these Scripts for the Network Administration and Installation 
 
 ## Summary
 
-[1/ Script_switch.py](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/DHCP#script_switchpy)
+[1/ Script_switch.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#script_switchpy)
 
-[2/ ods2dhcp_guest.py](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/DHCP#ods2dhcp_guestpy)
+[2/ ods2dhcp_guest.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#ods2dhcp_guestpy)
 
-[3/ Ods_conf.py](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/DHCP#ods_confpy)
+[3/ Ods_conf.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#ods_confpy)
 
-[4/ Sort_ods_table.py](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/DHCP#sort_ods_tablepy)
+[4/ Sort_ods_table.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#sort_ods_tablepy)
 
-[5/ verifiy_ip.py](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/DHCP#verifiy_ippy)
+[5/ verifiy_ip.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#verifiy_ippy)
 
-[6/ Support](https://github.com/matthieucabos/Python-Scripts/tree/master/ICGM-CNRS/DHCP#support)
+[6/ Support](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#support)
 
 ______________________________________________________________________________________________________
 
