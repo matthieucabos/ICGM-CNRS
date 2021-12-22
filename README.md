@@ -2,7 +2,7 @@
 
 **Author**  : *CABOS Matthieu*
 
-**Release** : *2021*
+**Release** : *2021-2022*
 
 **Organization** : *ICGM-CNRS*
 
