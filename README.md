@@ -1,6 +1,6 @@
 ![](https://spinati.com/wp-content/uploads/2015/03/logo-cnrs.png)
 
-# Python Scripts
+# Python / Shell Scripts
 
 **Author**  : *CABOS Matthieu*
 
