@@ -31,7 +31,6 @@ It must be present at top level of **Set_SQL_Roomname.py** :
 
 Folder Structure::
 
-************************************
 ```bash
 .
 ├── GLPI
@@ -43,7 +42,6 @@ Folder Structure::
 
 Where Table.sql is the SQL table generated since the **Set_Room** function instructions.
 
-************************************
 
 To generate the associated SQL File, please to use the command :
 
