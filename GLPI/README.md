@@ -15,8 +15,6 @@ I've been writing these Scripts for the Network Administration and Installation 
 
 **Warning** All these script have been written to be executed into the own network structure of the ICGM-IBMM Network. It should be used into a different environnement **respecting the structure in any case** to make them work.
 
-____________________________________________________________________________
-
 # Usage
 
 To use, please to create a *'GLPI'* Folder into your server root Repertory.
