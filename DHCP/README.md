@@ -20,7 +20,7 @@ I've been writing these Scripts for the Network Administration and Installation 
 
 [1/ Script_switch.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#script_switchpy)
 
-[2/ dhcp2ods.py]
+[2/ dhcp2ods.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#dhcp2odspy)
 
 [3/ ods2dhcp_guest.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#ods2dhcp_guestpy)
 
