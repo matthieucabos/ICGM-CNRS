@@ -55,7 +55,7 @@ To make it work in others Organisations, you have to adapt the Cisco List to you
 
 ## dhcp2ods.py
 
-This script has been writtent to dress a proper and immediate DHCP dictionnary listing all the already accepted ip adresses associated to their mac address, their vlan id and vlan name.
+This script has been written to dress a proper and immediate DHCP dictionnary listing all the already accepted ip adresses associated to their mac address, their vlan id and vlan name.
 
 It returns an ods file containing all the DHCP server main informations.
 
