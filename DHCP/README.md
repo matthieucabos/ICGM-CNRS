@@ -20,15 +20,17 @@ I've been writing these Scripts for the Network Administration and Installation 
 
 [1/ Script_switch.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#script_switchpy)
 
-[2/ ods2dhcp_guest.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#ods2dhcp_guestpy)
+[2/ dhcp2ods.py]
 
-[3/ Ods_conf.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#ods_confpy)
+[3/ ods2dhcp_guest.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#ods2dhcp_guestpy)
 
-[4/ Sort_ods_table.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#sort_ods_tablepy)
+[4/ Ods_conf.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#ods_confpy)
 
-[5/ verifiy_ip.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#verifiy_ippy)
+[5/ Sort_ods_table.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#sort_ods_tablepy)
 
-[6/ Support](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#support)
+[6/ verifiy_ip.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#verifiy_ippy)
+
+[7/ Support](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#support)
 
 ______________________________________________________________________________________________________
 
@@ -48,6 +50,52 @@ Each user have a specific field in the DHCP configuration files associated to a 
 Once each of these values informed, the dhcp configuration file is readed and these data are sent to the server.
 This script has been written for and uniquely for the ICGM-CNRS laboratory, the list of Cisco Switch is associated to this laboratory.
 To make it work in others Organisations, you have to adapt the Cisco List to your own Switchs Architecture.
+
+[**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#dhcp)
+
+## dhcp2ods.py
+
+This script has been writtent to dress a proper and immediate DHCP dictionnary listing all the already accepted ip adresses associated to their mac address, their vlan id and vlan name.
+
+It returns an ods file containing all the DHCP server main informations.
+
+This utilitary script must be used on the first child level of a DHCP server (since the conf files repertory).
+It must be respect the following structure : 
+
+```bash
+.
+├── DHCP
+│   └── dhcp2ods.py
+├── dhcpd-501.conf
+├── dhcpd-510.conf
+├── dhcpd-511.conf
+├── dhcpd-512.conf
+├── dhcpd-513.conf
+├── dhcpd-514.conf
+├── dhcpd-515.conf
+├── dhcpd-516.conf
+├── dhcpd-518.conf
+├── dhcpd-519.conf
+├── dhcpd-524.conf
+├── dhcpd-525.conf
+├── dhcpd-526.conf
+├── dhcpd-528.conf
+├── dhcpd-529.conf
+├── dhcpd-530.conf
+└── dhcpd.conf
+```
+
+It is ruled by the following algorithm :
+* **Building DHCP dictionnary** and get infos since the given IP adresses list as parameter (written as tmp file)
+* **Reading raw file content** to extract informations
+* **Defining Regular Expressions definitions** to treat faster as possible the dictionnary
+* **Reading and filtering raw Content** since regular expressions to dress Informations Lists
+* **Package lists** as an excel file content to write
+* **Saving a pre-version** of the dictionnary
+* **Adjusting automatic width** for columns
+* **Defining layout** for the document
+* **Saving file** as xlsx file (temporary excel file)
+* **Convert to .ods file** and delete temporary file
 
 [**top of page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/DHCP#dhcp)
 
