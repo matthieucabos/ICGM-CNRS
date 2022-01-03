@@ -20,6 +20,8 @@ These scripts need a ssh session access into the origin server (with form origin
 
 These main scripts have been written to automate the DHCP Informations retrievment and Origin Server essentials informations : 
 
+[1/ Get_Origin_Info.py]
+
 [1/ Get_User_Info_From_IP_v3.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_user_info_from_ip_v3py)
 
 [2/ Treat_log_v2.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#treat_log_v2sh)
@@ -31,6 +33,60 @@ These main scripts have been written to automate the DHCP Informations retrievme
 [5/ Treat_tokens.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#treat_tokenssh)
 
 [6/ Support](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#support)
+
+## Get_Origin_Info.py
+
+This script is the full optimised and parallelized code version of the Origin Users Informations Getter.
+It allow us to get since an Origin server and the tftp server repertoring connected people the full informations content since the log description to the connection time.
+
+
+It uses : 
+* **Treat_log_v2.sh** file to get an immediate association between user ID and their IP.
+* **Treat_tokens.sh** script to get a tokens manager into your Python Code
+* **Get_Connexion_Time.py** Library to get the connexion time elapsed by user.
+* **Get_tftp_infos.py** Library to treat and manage a Tftp content from the server
+
+It must be used into the equivalent environment :
+
+```bash
+.
+├── dhcpd-501.conf
+├── dhcpd-510.conf
+├── dhcpd-511.conf
+├── dhcpd-512.conf
+├── dhcpd-513.conf
+├── dhcpd-514.conf
+├── dhcpd-515.conf
+├── dhcpd-516.conf
+├── dhcpd-518.conf
+├── dhcpd-519.conf
+├── dhcpd-524.conf
+├── dhcpd-525.conf
+├── dhcpd-526.conf
+├── dhcpd-528.conf
+├── dhcpd-529.conf
+├── dhcpd-530.conf
+├── dhcpd.conf
+└── Origin_Manager
+    ├── Get_Connexion_Time.py
+    ├── Get_Origin_Info.py
+    ├── Get_tftp_infos.py
+    ├── Treat_log_v2.sh
+    └── Treat_tokens.sh
+```
+This Script use the already written associated script.
+The ssh sessions connections have been parallelized to make the script faster than ever.
+
+The algorithm follow these steps in order :
+* **Get the logwatch file**
+* **Treat the Treat_log_v2.sh output** since regular expressions to get the correct user2ip list
+* **Get the Snoop dictionnary** since the tftp server of connected people (cf [**DHCP Snooping**](https://en.wikipedia.org/wiki/DHCP_snooping))
+* **Get the connection time** since the *Get_Connexion_Time* library
+
+Please to use with the correct following syntax :
+```bash
+python3 Get_Origin_Info.py
+```
 
 ___________________________________________________________________________________________________
 
