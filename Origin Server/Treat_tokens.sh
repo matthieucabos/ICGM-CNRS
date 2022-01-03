@@ -34,7 +34,6 @@ day=`date | cut -d " " -f1`
 month=`date | cut -d " " -f2`
 num=`date | cut -d " " -f3`
 today="$day $month $num"
-today="mer. déc. 15"
 cut_line=`cat logwatch | grep -n "$today" | head -1 | grep -Po "\K^[0-9]+"`
 nb_line=`wc -l logwatch | grep -Po "\K^[0-9]+"`
 read_line=`echo $(($nb_line-$cut_line))`

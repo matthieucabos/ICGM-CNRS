@@ -51,15 +51,15 @@ def Build_Token_dict():
 
 	return Token_Dict_IN,Token_Dict_OUT
 
-def Get_Connection_Time(IN,OUT):
+def Get_Connection_Time():
 
 	# Computing the connection time since the first OUT token and the last IN token
 
+	IN,OUT=Build_Token_dict()
 	res={}
 	for user in IN.keys():
 		if user in OUT.keys():
 			res[user]=abs((OUT[user]-IN[user])/60)
 	return res
-IN,OUT=Build_Token_dict()
-Connection_Time=Get_Connection_Time(IN,OUT)
+Connection_Time=Get_Connection_Time()
 print(Connection_Time)
