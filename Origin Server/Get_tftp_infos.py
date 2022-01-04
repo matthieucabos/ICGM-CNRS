@@ -104,7 +104,6 @@ def Get_Description(Snoop_Dict):
 	output=""
 	return_dict={}
 
-
 	List_Dic=[]
 	div=14
 	List_Dic=cut_dic(IPSwitchs,div)
@@ -113,11 +112,20 @@ def Get_Description(Snoop_Dict):
 	Process_List=[]
 	for i in range(0,len(List_Dic)):
 		cisco=list(List_Dic[i].keys())[0]
-		Process_List.append(Process(target=ssh_session,args=(cisco,commands[cisco],return_dict,)))
+		try:
+			Process_List.append(Process(target=ssh_session,args=(cisco,commands[cisco],return_dict,)))
+		except:
+			print(str(cisco)+" is not avaible as key.")
 	for i in range(0,len(List_Dic)):
-		Process_List[i].start()
+		try:
+			Process_List[i].start()
+		except:
+			print(str(cisco)+" is not avaible as key.")
 	for i in range(0,len(List_Dic)):
-		Process_List[i].join()
+		try:
+			Process_List[i].join()
+		except:
+			print(str(cisco)+" is not avaible as key.")
 
 	regex_socket=r"Gi([0-9]+\/){2}[0-9]+"
 	regex_desc=r'[NRJPASEP]+[0-9A-Z.]+\-[0-9]+'
@@ -193,3 +201,5 @@ def get_Dict():
 	# 	print(k)
 	# 	print(v)
 	return Snoop_Dict
+
+# print(get_Dict())
