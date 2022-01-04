@@ -15,11 +15,24 @@ def Init_dict(Hostname,flag):
 			res[Hostname[i]]=0
 	return res 
 
-def Build_Token_dict():
+def Get_Max(liste):
+	maxi=0
+	for item in liste:
+		if item>maxi:
+			maxi=item 
+	return maxi
 
-	# Building Timestamp Dictionnary to compute the connection time
+def Get_Min(liste):
+	mini=99999999999999999999999
+	for item in liste:
+		if item<mini:
+			mini=item
+	return mini
 
-	Done=False
+def build_dict():
+
+	time_dict_in={}
+	time_dict_out={}
 
 	# I first read the results of the Treat_tokens.sh script
 
@@ -35,31 +48,33 @@ def Build_Token_dict():
 	IN_TIME=[item.replace('\n','') for item in IN_TIME]
 	OUT_TIME=[item.replace('\n','') for item in OUT_TIME]
 
-	# Initialising Dictionnaries
-
-	Token_Dict_IN=Init_dict(IN_Hostname,1)
-	Token_Dict_OUT=Init_dict(OUT_Hostname,0)
-
-	# Populate Dictionnaries
-
 	for i in range(len(IN_Hostname)):
-		if (int(IN_TIME[i])>Token_Dict_IN[IN_Hostname[i]]):
-			Token_Dict_IN[IN_Hostname[i]]=int(IN_TIME[i])
-	for i in range(len(OUT_Hostname)):		
-		if (int(OUT_TIME[i])<Token_Dict_OUT[OUT_Hostname[i]]):
-			Token_Dict_OUT[OUT_Hostname[i]]=int(OUT_TIME[i])
-
-	return Token_Dict_IN,Token_Dict_OUT
+		if not IN_Hostname[i] in time_dict_in:
+			time_dict_in[IN_Hostname[i]]=int(IN_TIME[i])
+		elif (IN_Hostname[i] in time_dict_in) and (int(IN_TIME[i])<time_dict_in[IN_Hostname[i]]):
+			time_dict_in[IN_Hostname[i]]=int(IN_TIME[i])
+		else:
+			pass
+	for i in range(len(OUT_Hostname)):
+		if not OUT_Hostname[i] in time_dict_out:
+			time_dict_out[OUT_Hostname[i]]=int(OUT_TIME[i])
+		elif (OUT_Hostname[i] in time_dict_out) and (int(OUT_TIME[i])>time_dict_out[OUT_Hostname[i]]):
+			time_dict_out[OUT_Hostname[i]]=int(OUT_TIME[i])
+		else:
+			pass
+	return time_dict_in,time_dict_out
 
 def Get_Connection_Time():
 
 	# Computing the connection time since the first OUT token and the last IN token
 
-	IN,OUT=Build_Token_dict()
+	IN,OUT=build_dict()
 	res={}
 	for user in IN.keys():
 		if user in OUT.keys():
 			res[user]=abs((OUT[user]-IN[user])/60)
 	return res
+
+build_dict()
 Connection_Time=Get_Connection_Time()
 print(Connection_Time)
