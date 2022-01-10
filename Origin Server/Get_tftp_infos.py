@@ -50,7 +50,7 @@ def Treat_out(output):
 	regex_mac=r'([a-zA-Z0-9]{4}\.){2}[a-zA-Z0-9]{4}'
 	regex_socket=r'Gi([0-9]+\/){2}[0-9]+'
 	regex_vlan=r'\s[0-9]{3}\s'
-	regex_switch=r'Balard-[0-9A-Z]+\-[0-9]+\_[0-9]+\.'
+	regex_switch=r'Balard-[0-9A-Z]+\-[0-9]+'
 
 	ip=[]
 	mac=[]
@@ -75,7 +75,7 @@ def Treat_out(output):
 	for matchNum, match in enumerate(matches, start=1):
 		switch.append(match.group())
 	for i in range(len(ip)):
-		res[ip[i]]=[mac[i],socket[i],vlans[i],switch[i][:-4]]
+		res[ip[i]]=[mac[i],socket[i],vlans[i],switch[i]]
 	return res
 
 def Get_Description(Snoop_Dict):
@@ -185,6 +185,8 @@ def get_Dict():
 	output=os.popen("ssh "+str(user)+"@tftp.srv-prive.icgm.fr '"+str(command)+"'").read()
 	Snoop_Dict=Treat_out(output)
 	Description_Dict=Get_Description(Snoop_Dict)
+
+
 
 	for k,v in Snoop_Dict.items():
 		try:
