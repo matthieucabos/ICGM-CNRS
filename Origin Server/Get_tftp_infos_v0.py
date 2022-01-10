@@ -110,9 +110,6 @@ def Get_Description(Snoop_Dict):
 	manager=multiprocessing.Manager()
 	return_dict=manager.dict()
 	Process_List=[]
-
-
-
 	for i in range(0,len(List_Dic)):
 		cisco=list(List_Dic[i].keys())[0]
 		try:
@@ -130,10 +127,8 @@ def Get_Description(Snoop_Dict):
 		except:
 			print(str(cisco)+" is not avaible as key.")
 
-
-
-	regex_socket=re.compile(r"Gi([0-9]+\/){2}[0-9]+")
-	regex_desc=r"[NRJPASEP]+[0-9A-Z.]+\-[0-9]+"
+	regex_socket=r"Gi([0-9]+\/){2}[0-9]+"
+	regex_desc=r'[NRJPASEP]+[0-9A-Z.]+\-[0-9]+'
 
 	socket_list=[]
 	descr_list=[]
@@ -141,16 +136,16 @@ def Get_Description(Snoop_Dict):
 	Description_dictionnary={}
 
 	for k,v in return_dict.items():
-		for item in v.split("\n"): 
-			match=regex_socket.match(item)
-			match2=re.findall(regex_desc,item)
-			try:
-				tmp_dict[match.group()]=match2[0]
-			except:
-				pass
+		matches=re.finditer(regex_socket, v, re.MULTILINE)
+		for matchNum, match in enumerate(matches, start=1):
+			socket_list.append(match.group())
+		matches=re.finditer(regex_desc, v, re.MULTILINE)
+		for matchNum, match in enumerate(matches, start=1):
+			descr_list.append(match.group())
+		for i in range(len(socket_list)):
+			tmp_dict[socket_list[i]]=descr_list[i]	
 		Description_dictionnary[k]=tmp_dict	
 		tmp_dict={}
-
 	return Description_dictionnary
 
 
@@ -191,18 +186,19 @@ def get_Dict():
 	Snoop_Dict=Treat_out(output)
 	Description_Dict=Get_Description(Snoop_Dict)
 
+
+
 	for k,v in Snoop_Dict.items():
 		try:
 			tmp=v 
 			description=Description_Dict[v[3]][v[1]]
 			Snoop_Dict[k]=[v[0],v[1],v[2],v[3],description]
 		except:
-			pass
-			# print("Error occured at : \n")
-			# print(k)
-			# print(v)
-			# print(Description_Dict[v[3]])
-			# print("Please to contact @ matthieu.cabos@umontpellier.fr\n")
+			print("Error occured at : \n")
+			print(k)
+			print(v)
+			print(Description_Dict[v[3]])
+			print("Please to contact @ matthieu.cabos@umontpellier.fr\n")
 	# for k,v in Snoop_Dict.items():
 	# 	print(k)
 	# 	print(v)

@@ -34,7 +34,10 @@ for k,v in user_ip_dict.items():
 	to_write.append(k)
 	to_write.append(hostname)
 	to_write.extend(Snoop_Dict[k])
-	to_write.append(str(Connection_Time[hostname])+' min')
+	try:
+		to_write.append(str(Connection_Time[hostname])+' min')
+	except:
+		print("Connection time not avaible for user "+str(hostname))
 	Sheet.append(to_write)
 	to_write=[]
 

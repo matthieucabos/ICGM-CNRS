@@ -88,12 +88,16 @@ def build_dict():
 	Connected_content=os.popen('ssh mcabos@origin.srv-prive.icgm.fr \'/opt/Linux_FLEXnet_Server_ver_11.16.5.1/lmutil  lmstat -a -c /opt/Linux_FLEXnet_Server_ver_11.16.5.1/Licenses/Origin_20jetons.lic | grep "^.*origin\.srv-prive\.icgm\.fr/27000.*" | cut -d " " -f6\'').readlines()
 	Connected_content=[ item.replace("\n","") for item in Connected_content]
 
+	regex_hostname=re.compile('[A-Za-zîë]+\@[A-Za-zîë0-9-]+')
+	hostname=""
 	for k,v in Token_dict.items():
+		match=regex_hostname.match(k)
+		hostname=match.group()
 		if is_connected(k,Connected_content):
 			now=int(time.time())
-			res[k]=round(abs(get_min(v)-now)/60)
+			res[hostname]=round(abs(get_min(v)-now)/60)
 		else:
-			res[k]=round(abs(get_max(v)-get_min(v))/60)
+			res[hostname]=round(abs(get_max(v)-get_min(v))/60)
 
 	return res
 
