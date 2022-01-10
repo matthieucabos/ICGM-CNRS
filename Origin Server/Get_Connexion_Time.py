@@ -1,4 +1,6 @@
 import os
+import time
+import re
 
 __author__="CABOS Matthieu"
 __date__=22/12/2021
@@ -15,19 +17,26 @@ def Init_dict(Hostname,flag):
 			res[Hostname[i]]=0
 	return res 
 
-def Get_Max(liste):
+def get_max(liste):
 	maxi=0
 	for item in liste:
-		if item>maxi:
+		if item> maxi:
 			maxi=item 
-	return maxi
+	return maxi  
 
-def Get_Min(liste):
-	mini=99999999999999999999999
+def get_min(liste):
+	mini=99999999999999
 	for item in liste:
-		if item<mini:
-			mini=item
-	return mini
+		if item< mini:
+			mini=item 
+	return mini  
+
+def is_connected(user,Connected_content):
+	for item in Connected_content:
+		if (item in user):
+			return True 
+		else:
+			return False
 
 def build_dict():
 
@@ -48,33 +57,53 @@ def build_dict():
 	IN_TIME=[item.replace('\n','') for item in IN_TIME]
 	OUT_TIME=[item.replace('\n','') for item in OUT_TIME]
 
-	for i in range(len(IN_Hostname)):
-		if not IN_Hostname[i] in time_dict_in:
-			time_dict_in[IN_Hostname[i]]=int(IN_TIME[i])
-		elif (IN_Hostname[i] in time_dict_in) and (int(IN_TIME[i])<time_dict_in[IN_Hostname[i]]):
-			time_dict_in[IN_Hostname[i]]=int(IN_TIME[i])
+	Host_list=IN_Hostname[:]
+	Host_list.extend(OUT_Hostname)
+
+	Token_list=IN_TIME[:]
+	Token_list.extend(OUT_TIME)
+	Token_dict={}
+	times=[]
+	Done=[]
+	current=Host_list[0]
+
+	for i in range(len(Host_list)):
+		print(current)
+		print(Host_list[i])
+		print(Token_list[i])
+		if current==Host_list[i]:
+			print("HERE")
+			times.append(int(Token_list[i]))
 		else:
-			pass
-	for i in range(len(OUT_Hostname)):
-		if not OUT_Hostname[i] in time_dict_out:
-			time_dict_out[OUT_Hostname[i]]=int(OUT_TIME[i])
-		elif (OUT_Hostname[i] in time_dict_out) and (int(OUT_TIME[i])>time_dict_out[OUT_Hostname[i]]):
-			time_dict_out[OUT_Hostname[i]]=int(OUT_TIME[i])
-		else:
-			pass
-	return time_dict_in,time_dict_out
+			print("NOT HERE")
+			if not (current in Done) and (current != '@orglab-SLOG@)'):
+				Token_dict[current]=times
+				Done.append(current)
+			else:
+				if (current != '@orglab-SLOG@)'):
+					Token_dict[current].extend(times)
+			current=Host_list[i]
+			times=[int(Token_list[i])]
+		print("________________________________________")
 
-def Get_Connection_Time():
-
-	# Computing the connection time since the first OUT token and the last IN token
-
-	IN,OUT=build_dict()
+	try:
+		Token_dict[current].extend(times)
+	except:
+		Token_dict[current]=(times)
 	res={}
-	for user in IN.keys():
-		if user in OUT.keys():
-			res[user]=abs((OUT[user]-IN[user])/60)
+
+	Connected_content=os.popen('ssh mcabos@origin.srv-prive.icgm.fr \'/opt/Linux_FLEXnet_Server_ver_11.16.5.1/lmutil  lmstat -a -c /opt/Linux_FLEXnet_Server_ver_11.16.5.1/Licenses/Origin_20jetons.lic | grep "^.*origin\.srv-prive\.icgm\.fr/27000.*" | cut -d " " -f6\'').readlines()
+	Connected_content=[ item.replace("\n","") for item in Connected_content]
+
+	for k,v in Token_dict.items():
+		if is_connected(k,Connected_content):
+			now=int(time.time())
+			res[k]=round(abs(get_min(v)-now)/60)
+		else:
+			res[k]=round(abs(get_max(v)-get_min(v))/60)
+
 	return res
 
 build_dict()
-Connection_Time=Get_Connection_Time()
+Connection_Time=build_dict()
 print(Connection_Time)
