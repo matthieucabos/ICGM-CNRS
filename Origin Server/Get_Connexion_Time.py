@@ -15,7 +15,7 @@ def Init_dict(Hostname,flag):
 			res[Hostname[i]]=999999999999
 		else:
 			res[Hostname[i]]=0
-	return res 
+	return res
 
 def get_max(liste):
 	maxi=0
@@ -99,4 +99,3 @@ def build_dict():
 
 build_dict()
 Connection_Time=build_dict()
-print(Connection_Time)
