@@ -68,14 +68,9 @@ def build_dict():
 	current=Host_list[0]
 
 	for i in range(len(Host_list)):
-		print(current)
-		print(Host_list[i])
-		print(Token_list[i])
 		if current==Host_list[i]:
-			print("HERE")
 			times.append(int(Token_list[i]))
 		else:
-			print("NOT HERE")
 			if not (current in Done) and (current != '@orglab-SLOG@)'):
 				Token_dict[current]=times
 				Done.append(current)
@@ -84,8 +79,6 @@ def build_dict():
 					Token_dict[current].extend(times)
 			current=Host_list[i]
 			times=[int(Token_list[i])]
-		print("________________________________________")
-
 	try:
 		Token_dict[current].extend(times)
 	except:
