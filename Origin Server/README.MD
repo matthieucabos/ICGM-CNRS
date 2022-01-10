@@ -38,6 +38,8 @@ ________________________________________________________________________________
 
 ## Get_Origin_Info.py
 
+### Since Version 1
+
 This script is the full optimised and parallelized code version of the Origin Users Informations Getter.
 It allow us to get since an Origin server and the tftp server repertoring connected people the full informations content since the log description to the connection time.
 
@@ -88,6 +90,16 @@ The algorithm follow these steps in order :
 Please to use with the correct following syntax :
 ```bash
 python3 Get_Origin_Info.py
+```
+
+### Since Version 2
+
+That version is similar to the first one. There is no display in this one but the Origin History file is properly written.
+
+
+Please to use with the correct following syntax :
+```bash
+python3 Get_Origin_Info_v2.py
 ```
 
 [**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin-server)
