@@ -74,6 +74,35 @@ ________________________________________________________________________________
 
 ## Get_Origin_Info.py
 
+### Since Version 2.1
+
+The most efficient version using the Origin_API extension.
+It write the orgin activities history containing all the DHCP extracted informations in concordance with the tftp boot server (listing only **real** connected users).
+In fact, you have to use it into a similar structure as following :
+```bash
+Origin
+├── Get_Origin_Info_v2.1.py
+├── Origin_API.py
+├── Treat_log_v2.sh
+└── Treat_tokens.sh
+```
+This script require differents ssh authorizations keys as :
+   * **Cisco Switch connected to the network** *(All the Balard-XY-Z switch access)*
+   * **tftp.srv-prive.icgm.fr** *(All the daily connected repertored users)*
+   * **origin.srv-prive.icgm.fr** *(The main origin server)*
+
+With access to these ssh passerel you will be able to retrieve all the needed informations to identify and keep tracability on your Origin server.
+
+### Since Version 2
+
+That version is similar to the first one. There is no display in this one but the Origin History file is properly written.
+
+
+Please to use with the correct following syntax :
+```bash
+python3 Get_Origin_Info_v2.py
+```
+
 ### Since Version 1
 
 This script is the full optimised and parallelized code version of the Origin Users Informations Getter.
@@ -126,16 +155,6 @@ The algorithm follow these steps in order :
 Please to use with the correct following syntax :
 ```bash
 python3 Get_Origin_Info.py
-```
-
-### Since Version 2
-
-That version is similar to the first one. There is no display in this one but the Origin History file is properly written.
-
-
-Please to use with the correct following syntax :
-```bash
-python3 Get_Origin_Info_v2.py
 ```
 
 [**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin-server)
