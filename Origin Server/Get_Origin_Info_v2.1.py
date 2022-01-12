@@ -3,6 +3,9 @@ import sys
 import re
 from Origin_API import *
 
+__author__='CABOS Matthieu'
+__date__='12/01/2022'
+
 user=os.getenv('USER')
 os.system('scp '+str(user)+'@origin.srv-prive.icgm.fr:~/logwatch .')
 Users=os.popen('./Treat_log_v2.sh').read()
