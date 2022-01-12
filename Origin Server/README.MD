@@ -20,19 +20,21 @@ These scripts need a ssh session access into the origin server (with form origin
 
 These main scripts have been written to automate the DHCP Informations retrievment and Origin Server essentials informations : 
 
-[1/ Get_Origin_Info.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_origin_infopy)
+[1/ Origin_API.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin_apipy)
 
-[2/ Get_User_Info_From_IP_v3.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_user_info_from_ip_v3py)
+[2/ Get_Origin_Info.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_origin_infopy)
 
-[3/ Treat_log_v2.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#treat_log_v2sh)
+[3/ Get_User_Info_From_IP_v3.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_user_info_from_ip_v3py)
 
-[4/ Origin_Users.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin_userspy)
+[4/ Treat_log_v2.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#treat_log_v2sh)
 
-[5/ Get_Connexion_Time.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_connexion_timepy)
+[5/ Origin_Users.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin_userspy)
 
-[6/ Treat_tokens.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#treat_tokenssh)
+[6/ Get_Connexion_Time.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_connexion_timepy)
 
-[7/ Support](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#support)
+[7/ Treat_tokens.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#treat_tokenssh)
+
+[8/ Support](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#support)
 
 ___________________________________________________________________________________________________
 
@@ -60,7 +62,14 @@ It contains all the following functions :
 
 All these functions have been wrote for the ICGM laboratry network and must be adapted to another network (Ssh passerel identification informations, Cisco switchs name and addresses, etc...)   
 
+Please to load it directly into a Python interpreter from the command :
+```bash
+from Origin_API import *
+```
+
 The associated documentation may be founded @ Work In Progress
+
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin-server)
 ___________________________________________________________________________________________________
 
 ## Get_Origin_Info.py
