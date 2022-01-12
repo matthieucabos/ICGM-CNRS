@@ -16,6 +16,11 @@ These Scripts have been written to manage properly an Origin Server (See [*Origi
 It is adapted to the Origin ssh platform (reading and treating **opt/Linux_FLEXnet_Server_ver_11.16.5.1/Licenses** and **/usr/local/flexlm/orglabdebug.log**
 wich are the Licence File and the Tokens Log file.
 
+These scripts require two main extension :
+
+* **netmiko** : *Automate the authentified ssh session*
+* **pyexcel** : *Treat and write ods and excel files*
+
 These scripts need a ssh session access into the origin server (with form origin.domain.fr)
 
 These main scripts have been written to automate the DHCP Informations retrievment and Origin Server essentials informations : 
