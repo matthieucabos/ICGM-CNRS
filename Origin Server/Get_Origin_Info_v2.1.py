@@ -6,9 +6,13 @@ from Origin_API import *
 __author__='CABOS Matthieu'
 __date__='12/01/2022'
 
+# Copy the logwatch file in the current directory
+
 user=os.getenv('USER')
 os.system('scp '+str(user)+'@origin.srv-prive.icgm.fr:~/logwatch .')
 Users=os.popen('./Treat_log_v2.sh').read()
+
+# Defining Regular Expressions
 
 regex_user=r'.*\:'
 regex_ip=r'([0-9]+\.){3}[0-9]+'
@@ -16,6 +20,8 @@ regex_ip=r'([0-9]+\.){3}[0-9]+'
 user_list=[]
 ip_list=[]
 user_ip_dict={}
+
+# getting User:ip association informations since the output of the Treat_log_v2.sh filtered by regular expressions.
 
 matches=re.finditer(regex_user, Users, re.MULTILINE)
 for matchNum, match in enumerate(matches,start=1):
@@ -27,6 +33,8 @@ for i in range(len(user_list)):
 	user_ip_dict[ip_list[i]]=user_list[i]
 Snoop_Dict=get_Dict()
 
+# Manage the display of the database
+
 to_write=[]
 Sheet=[['adresse ip','hostname','adresse mac','Socket','Vlan','Switch','Description','Connexion Time']]  # Rajouter le start time, la date et l'heure ?
 Connection_Time=build_dict()
@@ -34,6 +42,7 @@ Connection_Time=build_dict()
 # Connected_content=os.popen('ssh mcabos@origin.srv-prive.icgm.fr \'/opt/Linux_FLEXnet_Server_ver_11.16.5.1/lmutil  lmstat -a -c /opt/Linux_FLEXnet_Server_ver_11.16.5.1/Licenses/Origin_20jetons.lic | grep "^.*origin\.srv-prive\.icgm\.fr/27000.*" | cut -d " " -f6\'').readlines()
 # Connected_content=[ item.replace("\n","") for item in Connected_content]
 
+# Updating the content to write in history
 
 for k,v in user_ip_dict.items():
 	hostname=v[:-1]
@@ -48,7 +57,11 @@ for k,v in user_ip_dict.items():
 	Sheet.append(to_write)
 	to_write=[]
 
+# Print at screen as trivial verification
+
 print(Sheet)
+
+# Writing content into the origin history file and update the origin server
 
 f=open('Origin_history','a')
 for item in Sheet:
