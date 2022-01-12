@@ -77,7 +77,9 @@ ________________________________________________________________________________
 ### Since Version 2.1
 
 The most efficient version using the Origin_API extension.
+
 It write the orgin activities history containing all the DHCP extracted informations in concordance with the tftp boot server (listing only **real** connected users).
+
 In fact, you have to use it into a similar structure as following :
 ```bash
 Origin
@@ -86,6 +88,30 @@ Origin
 ├── Treat_log_v2.sh
 └── Treat_tokens.sh
 ```
+
+These actions need an efficient log file since the Origin server orglabdebug.log file.
+I use a logwatch intermediate file with allocated token inserted into the token log file.
+It is ruled by automatic script : 
+
+```bash
+date >> ./logwatch
+ss -n -t | grep 60213 >> ./logwatch
+tail -n 1 /usr/local/flexlm/orglabdebug.log >> ./logwatch
+```
+
+where 60213 is the communication port of the Origin application.
+
+This script is lauched periodically with commands :
+
+```bash
+inotifywait -q -m -e modify /usr/local/flexlm/orglabdebug.log|
+while read -r filename event; do
+ ./Script.sh       
+done
+```
+
+This script must be used using the **nohup** linux command to make it write properly and permanently the logwatch file.
+
 This script require differents ssh authorizations keys as :
    * **Cisco Switch connected to the network** *(All the Balard-XY-Z switch access)*
    * **tftp.srv-prive.icgm.fr** *(All the daily connected repertored users)*
@@ -198,25 +224,6 @@ The script must be used into an equivalent environment structure :
 .
 .
 └── dhcpd-vlan_n.conf
-```
-
-
-These actions need an efficient log file since the Origin server orglabdebug.log file.
-I use a logwatch intermediate file with allocated token inserted into the token log file.
-It is ruled by automatic script : 
-
-```bash
-date >> ./logwatch
-ss -n -t | grep 60213 >> ./logwatch
-tail -n 1 /usr/local/flexlm/orglabdebug.log >> ./logwatch
-```
-This script is lauched periodically with commands :
-
-```bash
-inotifywait -q -m -e modify /usr/local/flexlm/orglabdebug.log|
-while read -r filename event; do
- ./Script.sh       
-done
 ```
 
 The result is shown with the following syntax :
