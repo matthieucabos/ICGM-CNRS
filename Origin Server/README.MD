@@ -67,7 +67,11 @@ Please to load it directly into a Python interpreter from the command :
 from Origin_API import *
 ```
 
-The associated documentation may be founded @ Work In Progress
+The associated documentation may be founded [**here**](https://github.com/matthieucabos/ICGM-CNRS/raw/main/Origin%20Server/origin_server.pdf) or by html generation using the command :
+
+```bash
+make html
+```
 
 [**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin-server)
 ___________________________________________________________________________________________________
