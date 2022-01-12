@@ -91,17 +91,17 @@ Origin
 
 These actions need an efficient log file since the Origin server orglabdebug.log file.
 I use a logwatch intermediate file with allocated token inserted into the token log file.
-It is ruled by automatic script : 
+It is ruled by a shell automated script containing the following instructions: 
 
 ```bash
 date >> ./logwatch
 ss -n -t | grep 60213 >> ./logwatch
 tail -n 1 /usr/local/flexlm/orglabdebug.log >> ./logwatch
 ```
-
 where 60213 is the communication port of the Origin application.
 
-This script is lauched periodically with commands :
+This shell script is lauched periodically with the following linux commands.
+It must be launched with the **nohup** linux command to make it write properly and permanently the logwatch file.
 
 ```bash
 inotifywait -q -m -e modify /usr/local/flexlm/orglabdebug.log|
@@ -110,7 +110,7 @@ while read -r filename event; do
 done
 ```
 
-This script must be used using the **nohup** linux command to make it write properly and permanently the logwatch file.
+With this way of work, the orglabdebug.log file and the logwatch file will never be altered.
 
 This script require differents ssh authorizations keys as :
    * **Cisco Switch connected to the network** *(All the Balard-XY-Z switch access)*
