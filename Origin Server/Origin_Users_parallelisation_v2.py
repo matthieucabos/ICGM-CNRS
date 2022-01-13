@@ -35,9 +35,20 @@ IPSwitchs={
     }
 
 def get_Port(output):
+	"""
+		Getting port number since the regular expressions using the output stdout from the ssh remote command output
+	
+		=============== ========== ======================================================
+		**Parameters**   **Type**   **Description**
+		**output**       *String*   The ssh remote command output specified as parameter
+		=============== ========== ======================================================
 
-	# Getting port number since the regular expressions using the output stdout from the ssh
+		Returns
+		-------
+		Integer
 
+		The port number used by the origin server.
+	"""
 	port=0
 	regex=r'[0-9]*'
 	maxi=0
@@ -52,9 +63,22 @@ def get_Port(output):
 	return maxi
 
 def get_IP_list(IP):
+	"""
+		Getting IP list since the regular expressions using the output stdout from the ssh remote command output
+		The filtering operation is done in multiline mode and will be coursed match by match.
+		The result is shown as a list of ip address.
 
-	# Getting IP list since the regular expressions using the output stdout from the ssh
+		=============== ========== =======================================================
+		**Parameters**   **Type**   **Description**
+		**IP**           *String*   The ssh remote command output specified as parameter
+		=============== ========== =======================================================
 
+		Returns
+		-------
+		String List
+		The list containing all the ipaddress founded in the ssh remote command output.
+
+	"""
 	banned=['127.0.0.1','10.14.14.20','10.14.14.9']
 	res=[]
 	tmp=[]
@@ -68,9 +92,23 @@ def get_IP_list(IP):
 	return list(dict.fromkeys(res))
 
 def get_Host_list(Host):
+	"""
+		Getting Host list since the regular expressions using the output stdout from the ssh remote command output.
+		Brownsing the string output line by line and filter each line independantly from the others to get the correct hostnames contained.
+		The hostnames have form *name.dsi0.icgm.fr:60213*, this is the form present into the output of a **ss -n -t -r** command. 
 
-	# Getting Host list since the regular expressions using the output stdout from the ssh
+		The result is the sorted list of the hostnames. To sort them, I use the **list(dict.fromkeys(liste))** command
 
+		=============== =========== ======================================================
+		**Parameters**   **Type**    **Description**
+		**Host**         *String*    The ssh remote command output specified as parameter
+		=============== =========== ======================================================
+
+		Returns
+		-------
+		String List
+		A list containing all the hostnames founded into the ssh remote command output.
+	"""
 	regex=r'[A-Z-]+\.[dsi0-9]+\.icgm.fr:[0-9]*'
 	Host_real=""
 	Host_list=Host.split('\n')
@@ -88,9 +126,27 @@ def get_Host_list(Host):
 	return list(dict.fromkeys(res))
 
 def Read_ods(path,Host_list,IP_list):
+	"""
+		Reading the Ordinateurs.ods file to get associated MAC_@ & Departement ID.
+		The Ordinateurs.ods file contain all the authorized host into the DHCP server (and so the MAC address and the Departement ID).
 
-	# Reading the Ordintaeurs.ods file to get associated MAC_@ & Departement ID
+		================ =============== ===================================================================
+		**Parameters**    **Type**        **Description**
+		**path**          *String*        Define the path of the .ods file to read 
+		**Host_list**     *String List*   The given Hostname list to find values into the ods file content
+		**IP_list**       *String List*   The given IP list to link the differents informations together
+		================ =============== ===================================================================
 
+		Returns
+		-------
+		String List
+		The List repertoring the following informations as item :
+
+			* Hostname
+			* MAC address
+			* Departemet ID
+			* IP address
+	"""
 	records = p.get_array(file_name=path)
 	ind=0
 	res=[]
@@ -105,18 +161,55 @@ def Read_ods(path,Host_list,IP_list):
 	return res
 
 def ssh_session_Treat_info(cisco,IPSwitchs):
-		home= os.getenv('HOME')
-		user=os.getenv('USER')
-		keyfile=home+'/.ssh/cisco'
-		ssh_session = netmiko.ConnectHandler(device_type='cisco_ios', ip=IPSwitchs[cisco],username=user, use_keys=True, key_file=keyfile)
-		output=ssh_session.send_command('sh mac address-table')
-		ssh_session.disconnect()
-		return output
+	"""
+		Automated authentified ssh session with parameters.
+		The associated remote command is **sh mac address-table** to automate the Cisco request y ssh.
+
+		=============== =============== ================================================================
+		**Parameters**   **Type**        **Description**
+		**cisco**        *String*        The Cisco Switch name to connect
+		**IPSwitchs**    *Dictionnary*   The dictionnary associating to each Switch name its IP address
+		=============== =============== ================================================================
+
+		Returns
+		-------
+		String
+		The raw output of the ssh remote command
+	"""
+	home= os.getenv('HOME')
+	user=os.getenv('USER')
+	keyfile=home+'/.ssh/cisco'
+	ssh_session = netmiko.ConnectHandler(device_type='cisco_ios', ip=IPSwitchs[cisco],username=user, use_keys=True, key_file=keyfile)
+	output=ssh_session.send_command('sh mac address-table')
+	ssh_session.disconnect()
+	return output
 
 def Treat_Info(Infos,IPSwitchs):
+	"""
+		Treat Infos getted since the ods file and the ssh output both. Etablishing a link between the MAC_@ and the Cisco Socket Number.
+		The result will be stored in a 'ready to print' list.
+		This function is ruled by a looped algorithm :
 
-	# Treat Infos getted since the ods file and the ssh output both. Etablishing a link between the MAC_@ and the Cisco Socket Number
-	
+		**for each cisco in the network** :
+
+			* **request the associated cisco**
+			* **get the Cisco gigabitethernet socket** from the **sh mac address-table** output : 
+
+				* *Filter by the following regular expression* : **Gi([0-9]\/){2}[0-9]+**
+
+			* **Store the informations** with form : *'Cisco : | Vlan / Mac_@ / GiB : | Host : | Dpt : | IP_@ '*
+		
+		=============== ================ =================================================================	
+		**Parameters**    **Type**        **Description**
+		**Infos**         *String list*   A list containing all the needed informations linked to an user
+		**IPSwitchs**     *Dictionnary*   The dictionnary associating to each Switch name its IP address
+		=============== ================ =================================================================
+
+		Returns
+		-------
+		String List
+		'Ready to print' String list where each item is associated with a user and have form : *'Cisco : | Vlan / Mac_@ / GiB : | Host : | Dpt : | IP_@ '*
+	"""
 	res=[]
 	for cisco in IPSwitchs.keys():
 		out=[]
@@ -141,9 +234,16 @@ def Treat_Info(Infos,IPSwitchs):
 	return(res)
 
 def Write_in_file(to_write,path):
+	"""
+		Write/Update Infos in file from the path name.
+		The Infos parameter must be with type Sorted String List as defined in the Treat_Info method.
 
-	# Write Infos in file
-
+		=============== ================ ===============================================================
+		**Parameters**    **Type**        **Description**
+		**to_write**      *String List*   The full content to write as defined in the treat_Info method
+		**path**          *String*        The raw path of the fle to write/update
+		=============== ================ ===============================================================
+	"""
 	f=open(path,'a')
 	for item in to_write:
 		f.write(item)
@@ -151,9 +251,41 @@ def Write_in_file(to_write,path):
 	f.close()
 
 def get_Description(Data):
+	"""
+		Updating Socket Description field and add a timestamp to the Information.
+		To do so, I'm uing the following regular expressions :
 
-	# Updating Socket Description field and add a timestamp to the Information.
+			* *Cisco socket getter* : **Gi([0-9]\/){2}[0-9]+**
+			* *Outlet Description getter* : **[NRJPASEP]+[0-9]+[A-K][0-9]+-[0-9]+**
+			* *Cisco Name getter* : **Balard-[EPACRDGH1234]+-[0-9]**
 
+		Foreach dataline in the Data list:
+
+			* Filter the two needed fields and store them in their respective variable cisco and socket 
+			* use a ssn session to get the output of the command **show interface gigabitethernet**
+			* Filter the output with the Outlet Description getter expression
+			* Add the Description field to the dataline
+			* Rebuild a full Data list as result
+
+		=============== =============== ==============================================================================
+		**Parameters**   **Type**       **Desccription**
+		**Data**         *String List*  The String Datas as list, each dataline contain the following informations :
+
+											* Cisco Name
+											* Vlan id
+											* MAC address
+											* Cisco Socket
+											* Hostname
+											* Departemet id
+											* IP address
+		=============== =============== ==============================================================================
+
+		Returns
+		-------
+		String List
+		The updated Data list with description field
+
+	"""
 	regex=r'Gi([0-9]\/){2}[0-9]+'
 	regex2=r'[NRJPASEP]+[0-9]+[A-K][0-9]+-[0-9]+'
 	regex3=r'Balard-[EPACRDGH1234]+-[0-9]'
@@ -187,15 +319,58 @@ def get_Description(Data):
 	return res
 
 def reverse(liste):
+	"""
+		Standard list reverse function
+
+		=============== =========== ====================
+		**Parameters**   **Type**   **Description**
+		**liste**        List       The list to reverse
+		=============== =========== ====================
+
+		Returns
+		-------
+		List
+		The reversed list
+	"""
 	res=[]
 	for i in range(len(liste)-1,-1,-1):
 		res.append(liste[i])
 	return res
 
 def get_time(Data,User_rep,User_list):
+	"""
+		Getting exact time duration since already recorded timestamp and add it to the Main Data List.
+		This method is ruled by the followings steps:
 
-	# Getting exact time duration since already recorded timestamp (Work In Progress, please do not use)
+			* foreach dataline in Datas :
 
+				* Get the IP address since regular expression filtering
+				* Get the name and check if present in the User_list
+				* If present, associate a timestamp 
+				* If the timestamp is defined, compute the difference between the now timestamp and the starting timestamp to get the Connexion time elapsed
+				* Update the Data list with the Time Elapsed field
+
+		================ ================ ===================================================================================================
+		**Parameters**     **Type**        **Description**
+		**Data**           *String List*   The String Datas as list, each dataline contain the following informations :
+
+											* Cisco Name
+											* Vlan id
+											* MAC address
+											* Cisco Socket
+											* Hostname
+											* Departemet id
+											* IP address
+											* Socket Description
+		**User_rep**       *Dictionnary*   The users dictionnary extracted from the logwatch file linking to an user his strating timestamp
+		**User_list**      *Dictionnary*   The User dictionnary  extracted from the logwatch file linking to an user his IP address
+		================ ================ ===================================================================================================
+
+		Returns
+		-------
+		String List
+		The updated Data list with field Time Elapsed
+	"""
 	res=[]
 	tmp=""
 	tmp_name=''
@@ -232,9 +407,31 @@ def get_time(Data,User_rep,User_list):
 	return reverse(res)
 
 def treat_Users(Users):
+	"""
+		Managing Tokens allocation (Time Elapsed since the first Token).
+		This method read the content of the requested Licence file.
 
-	# Managing Jetons allocation (Time Elapsed since the first Jeton)
+		Differents regular expressions manage the results :
 
+			* *month* : **[0-9]+\/+**
+			* *day* : **[^a-z]\/[0-9]+**
+			* *hour* : **[0-9]+\:**
+			* *minuts* : **\:[0-9]+**
+			* *user* : **^\s*[^:\s]+**
+			* *PC* : **[A-Z0-9]+-[A-Z0-9]+**
+
+		Once the differents fields retireved from regular expressions, the return dictionnary is populated with users name and the linked timestamp.
+
+		=============== ============  ==================================================================
+		**Parameters**    **Type**     **Description**
+		**Users**         *String*     The output of the Origin Licence Request to get Connected users
+		=============== ============  ==================================================================
+
+		Returns
+		-------
+		Dictionnary
+		The dictionnary associating to an user name its connexion starting timestamp
+	"""
 	Jeton_dic={}
 	regex=r'[0-9]+\/+'
 	regex2=r'[^a-z]\/[0-9]+'
@@ -274,9 +471,20 @@ def treat_Users(Users):
 		return None
 
 def cut_dic(Cisco_Dic,div):
+	"""
+		Split Dictionnary into div differents dictionnary to treat them with parallelism.
 
-	# Split Dictionnary into div differents dictionnary
+		================ ============== ========================================
+		**Parameters**   **Type**       **Description**
+		**Cisco_Dic**    *Dictionnary*  The Cisco 2 Ip main dictionnary
+		**div**          *Integer*      The number of dictionnary slice needed
+		================ ============== ========================================
 
+		Returns
+		-------
+		Dictionnary List
+		A list af *div* differents dictiononary 
+	"""
 	res=[]
 	tmp={}
 	ind=0
@@ -294,9 +502,13 @@ def cut_dic(Cisco_Dic,div):
 	return res
 
 def Cut_log():
+	"""
+		Cut logfile since the date (today as default).
+		The logwatch file is primary stored into the local folder.
+		Once done, It cut the logwatch file since the today date.
 
-	# Cut logfile since the date (today as default)
-
+		It write the daily logwatch content instead of your local copy of the logwatch file.
+	"""
 	try:
 		os.system('scp mcabos@origin.srv-prive.icgm.fr:~/logwatch .')
 	except:
@@ -320,9 +532,20 @@ def Cut_log():
 	f.close()
 
 def read_log(path):
+	"""
+		Read the log file and filter the content by regular expression to get the main content of the logwatch file.
 
-	# Read the log file
+		=============== ========== =======================================
+		**Parameters**   **Type**   **Description**
+		**path**         *String*   The path where the logwatch is stored
+		=============== ========== =======================================
 
+		Returns
+		-------
+		List of List
+		The list of list containing the main content sorrted by token in order
+	
+	"""
 	regex=r'[a-z]+([^a-z]+.*[0-9]*\n)+'
 	match_list=[]
 	tmp=[]
@@ -341,11 +564,26 @@ def read_log(path):
 	return res
 
 def Treat_log(match_list):
+	"""
+		Treat Log file content since regular expression to get 
 
-	# Treat Log file content since regular expression to get 
-	# * IP_@ list
-	# * New user information
+			* *IP_@ list* : **([0-9]+\.)+[0-9]+**
+			* *New user information* : **[A-Za-zëùî0-9]+@[A-Z0-9]+-[A-Z0-9]+**
 
+		The content analized is the outputof the read_log method sorted by token.
+		This function link an user to an ip list. This ip list contain all the suceptible ip for this user.
+
+		=============== =============== =========================================================================
+		**Parameters**    **Type**        **Description**
+		**match_list**    *List of List   The list of list containing the main content sorrted by token in order
+		=============== =============== =========================================================================
+
+		Returns
+		-------
+		Dictionnary
+		A dictionnary associating to an user name the associated ip address list from the logwatch file content
+
+	"""
 	regex=r'([0-9]+\.)+[0-9]+'
 	regex2=r'[A-Za-zëùî0-9]+@[A-Z0-9]+-[A-Z0-9]+'
 	banned=['10.14.14.20']
@@ -374,9 +612,21 @@ def Treat_log(match_list):
 	return User_list
 
 def diff_list(l1,l2):
+	"""
+		Compute difference between 2 lists to get the most suceptible ip to assign.
+		The difference between two set A and B (A-B) give us the ip addresses present in A but NOT in B.
 
-	# Compute difference between 2 lists
+		=============== ========== ===================================================================
+		**Parameters**   **Type**   **Description**
+		**l1**           *List*     An Ip list extracted from the Treat_log method return dictionnary
+		**l2**           *List*     An Ip list extracted from the Treat_log method return dictionnary
+		=============== ========== ===================================================================
 
+		Returns
+		-------
+		String List
+		The list containing the difference between l1 and l2
+	"""
 	res=[]
 	if(len(l1)>len(l2)):
 		m=l1
@@ -390,9 +640,25 @@ def diff_list(l1,l2):
 	return res
 
 def Diff_log(User_dic):
-	
-	# Associate a new user to the difference between 2 log slice
+	"""
+		Associate a new user to the difference between 2 log slice. Reults will be stored into a python dictionnary.
 
+		This function is ruled by the following instructions :
+
+			* **Brownsing the User_dic dictionnary** and filter the hostname by regular expression
+			* **Computing the difference between two adjacents lists** using the diff_list function
+			* **Associate to an user name its own ip addresses set**
+
+		=============== ================ ======================================================================================================================================
+		**Parameters**    **Type**       **Description**
+		**User_dic**      *Dictionnary*  The dictionnary associating to an user name the associated ip address list from the logwatch file content from the Treat_log function
+		=============== ================ ======================================================================================================================================
+
+		Returns
+		-------
+		Dictionnary
+		The dictionnary associating to an user name an ip addresses set.
+	"""
 	tmp=[]
 	res={}
 	for k,v in User_dic.items():
@@ -406,9 +672,22 @@ def Diff_log(User_dic):
 	return res
 
 def Treat_diff(User_dic):
+	"""
+		Compute the Set difference by User ID between two sets of ip address to get the correct one.
+		In fact treat the output of the Diff_log function (removing indexes and merge list if necessary)
 
-	# Compute the Set Cantor difference by User ID
+		=============== ============= ============================================================================================
+		**Parameters**   **Type**      **Description**
+		**User_dic**     *Dictionnary  The dictionnary associating to an user name an ip addresses set from the Diff_log function
+		=============== ============= ============================================================================================
 
+		Returns
+		-------
+		Dictionnary
+		The updated dictionnary associating to an user name an ip addresses
+
+
+	"""
 	res={}
 	regex=r'[A-Za-zëùî0-9]+@[A-Z0-9]+-[A-Z0-9]+'
 	index=0
@@ -434,9 +713,19 @@ def Treat_diff(User_dic):
 	return res
 
 def get_max(liste):
+	"""
+		Get the max value's index of the list.
 
-	# Get the max value of the list
+		=============== ========== ================================
+		**Parameters**   **Type**   **Description**
+		**liste**        *List*     Integer or Float list to treat
+		=============== ========== ================================
 
+		Returns
+		-------
+		Integer / Float
+		The index of the maximum value of the list
+	"""
 	maxi=0
 	for item in liste:
 		if item >= maxi:
@@ -444,9 +733,27 @@ def get_max(liste):
 	return liste.index(maxi)
 
 def get_ip(User_dic,IP_list):
+	"""
+		Get the real (most susceptible one) IP_@ from an user name using successives reults from functions :
 
-	# Get the real (most susceptible one) IP_@ from user name
+			* **read_log**
+			* **Treat_log**
+			* **Diff_log**
+			* **Treat_diff**
 
+		The favorite IP is choosen by number of appearence into the merged list of suceptibles ip address from difference.
+
+		=============== =============== ===========================================================================================================
+		**Parameters**   **Type**       **Description**
+		**User_dic**     *Dictionnary*  The dictionnary from the successive intermediate functions associating an user a merged list of candidates
+		**IP_list**      *String List*  The IP list of connected users
+		=============== =============== ===========================================================================================================
+
+		Returns
+		-------
+		Dictionnary
+		The Final dictionnary associating to an user the most suceptible IP address from logwatch analyze
+	"""
 	favorite=''
 	ip_id=[]
 	count=[0]*32
@@ -472,6 +779,27 @@ def get_ip(User_dic,IP_list):
 	return User_rep	
 
 def diff_ip(ipA,ipB):
+	"""
+		Get the raw difference between 2 ip address.
+
+		Exemple :
+
+			* IP_a=10.14.20.1
+			* IP_b=10.14.21.3
+
+		The difference will be 1.3
+
+		=============== ========== ========================
+		**Parameters**   **Type**   **Description**
+		**ipA**          *String*   IP address to compare
+		**ipB**          *String*   IP address to compare
+		=============== ========== ========================
+
+		Returns
+		-------
+		String
+		The raw difference between both of the ip address
+	"""
 	if len(ipA) > len(ipB):
 		while len(ipA)!=len(ipB):
 			ipB+='_'
@@ -481,9 +809,29 @@ def diff_ip(ipA,ipB):
 	return "".join(y for x, y in it.zip_longest(ipA,ipB) if x != y)
 
 def get_IP_from_log(IP_list):
+	"""
+		DHCP data finder Main Resolution Algorithm.
+		This algorithm use and manage the functions:
 
-	# DHCP Main Resolution Algorithm
+			* **read_log**
+			* **Treat_log**
+			* **Diff_log**
+			* **Treat_diff**
+			* **get_ip**
+			* **diff_ip**
 
+		It restore the final dictionnary associating to an user its ip address.
+
+		=============== =============== ==========================================================
+		**Parameters**   **Type**       **Description**
+		**IP_list**      *String List*  The list extracted from the command's output **ss -n -t**
+		=============== =============== ==========================================================
+
+		Returns
+		-------
+		Dictionnary 
+		The Final dictionnary associating to an user the most suceptible IP address from logwatch analyze
+	"""
 	not_assigned=[]
 	current=''
 	mini=10
@@ -514,6 +862,22 @@ def get_IP_from_log(IP_list):
 	return test5
 
 def Update_history():
+	"""
+		This is the main function of the algorithm used to update Origin History since log file.
+
+		This algorithm is ruled by followings steps :
+
+			* **Getting Users acount informations since the top level** : *Environnment variable getter*
+			* **Connecting an ssh session to the origin.srv-prive.icgm.fr server** : *Using netmiko module to automate authentified ssh session*
+			* **Getting raw users list Informations** : *From the output of the Origin Licence Request, Retrieve the connected users list*
+			* **Getting the Port Informations** : *From the* **netstat -anp** *command, retrieve the Origin server's used port number*
+			* ** Getting the raw IP list informations** : *From the* **ss -n -t** *command, Dress the list of present IP in connexion table*
+			* **Getting the raw hostname list Informations** : *From the* **ss -n -t -r** *command, Get the hostname list preset in connexion table*
+			* **Exit the ssh session and read the Ordinateurs.ods file** : *From the Ordinateurs.ods file, Fid and store all the others needed informations as MAC @, Vlan Id, ...*
+			* **Updating the Origin_history file since the newest Informations** 
+
+		The results are dispayed at screen but could be write in an Origin History
+	"""
 
 	# Getting Users acount informations since the top level
 
@@ -567,15 +931,15 @@ def Update_history():
 		to_write=Treat_Info(Infos,IPSwitchs)
 		to_write=get_Description(to_write)
 		to_write=get_time(to_write,User_rep,User_list)
-		# for item in to_write:
-		# 	print(item)
+		for item in to_write:
+			print(item)
 
-		try:
-			os.system('scp '+str(user)+'@origin.srv-prive.icgm.fr:/home/mcabos/Origin_history .')
-		except:
-			pass
-		Write_in_file(to_write,'./Origin_history')
-		os.system('scp ./Origin_history '+str(user)+'@origin.srv-prive.icgm.fr:/home/mcabos/')
+		# try:
+		# 	os.system('scp '+str(user)+'@origin.srv-prive.icgm.fr:/home/mcabos/Origin_history .')
+		# except:
+		# 	pass
+		# Write_in_file(to_write,'./Origin_history')
+		# os.system('scp ./Origin_history '+str(user)+'@origin.srv-prive.icgm.fr:/home/mcabos/')
 
 # Initialisation
 
@@ -589,6 +953,9 @@ Infos=[]
 to_write=[]
 User_rep={}
 Process_List=[]
+
+# Launching section
+
 Cut_log()
 Update_history()
 os.system('rm logwatch')
