@@ -57,8 +57,16 @@ With access to these ssh passerel you will be able to retrieve all the needed in
 Version 2
 ---------
 
-That version is similar to the first one. There is no display in this one but the Origin History file is properly written.
+That version is similar to the version 1. There is no display in this one but the Origin History file is properly written.
+The version 2 is treating the **full daily logwatch content** and should be used at the end of a day for exemple or to verify the results of the version 2.1.
 
+It give us the **same informations than the version 2.1** but it will display into the Origin history file **all the activities** on the **origin server**.
+
+It must be consider as a **pre-version of version 2.1** and should be used also as a **log file analyzer**.
+
+**Susbtitute the differents date** variables (as *day, month, year, etc*) **with a specific date** will treat the logwatch file **since this specific date**. 
+
+This script will be used as a logwatch analizer instead of a real time analizer like the version 2.1 and it could be really interesting with **network management** and **administration tool**.
 
 Please to use with the correct following syntax :
 

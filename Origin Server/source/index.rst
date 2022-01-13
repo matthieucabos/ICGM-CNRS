@@ -26,12 +26,13 @@ These main scripts have been written to automate the DHCP Informations retrievme
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
    Get_Origin_Info
    Origin_API
-
-
+   Treat_tokens
+   Treat_log_v2
+   Origin_Users_parallelisation_v2
+   Origin_Users_parallelisation_v2_API
 
 Indices and tables
 ==================
