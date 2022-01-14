@@ -23,6 +23,12 @@ These scripts require two main extension :
 
 These scripts need a ssh session access into the origin server (with form origin.domain.fr)
 
+The associated documentation may be founded [**here**](https://github.com/matthieucabos/ICGM-CNRS/raw/main/Origin%20Server/origin_server.pdf) or by html generation using the command :
+
+```bash
+make html
+```
+
 These main scripts have been written to automate the DHCP Informations retrievment and Origin Server essentials informations : 
 
 [1/ Origin_API.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin_apipy)
@@ -70,12 +76,6 @@ All these functions have been wrote for the ICGM laboratry network and must be a
 Please to load it directly into a Python interpreter from the command :
 ```bash
 from Origin_API import *
-```
-
-The associated documentation may be founded [**here**](https://github.com/matthieucabos/ICGM-CNRS/raw/main/Origin%20Server/origin_server.pdf) or by html generation using the command :
-
-```bash
-make html
 ```
 
 [**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin-server)
