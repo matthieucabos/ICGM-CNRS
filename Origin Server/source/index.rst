@@ -22,7 +22,21 @@ It is adapted to the Origin ssh platform
 
 These scripts need a ssh session access into the origin server (with form origin.domain.fr)
 
-These main scripts have been written to automate the DHCP Informations retrievment and Origin Server essentials informations 
+These main scripts have been written to automate the DHCP Informations retrievment and Origin Server essentials informations.
+
+The main project is made of the following files :
+
+   * **Get_Origin_Info**
+   * **Origin_API**
+   * **Treat_tokens**
+   * **Treat_log_v2**
+
+The others file concern two pre-versions of the project. Each of them is associated to its API:
+
+   * **Origin_Users_parallelisation_v2**
+   * **Origin_Users_parallelisation_v2 associated API**
+   * **Get_User_Info_From_IP_v2**
+   * **Get_User_Info_From_IP_v2 associated API**
 
 .. toctree::
    :maxdepth: 2
@@ -33,6 +47,8 @@ These main scripts have been written to automate the DHCP Informations retrievme
    Treat_log_v2
    Origin_Users_parallelisation_v2
    Origin_Users_parallelisation_v2_API
+   Get_User_Info_From_IP_v2
+   Get_User_Info_From_IP_v2_API
 
 Indices and tables
 ==================
