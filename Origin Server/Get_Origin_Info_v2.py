@@ -38,7 +38,7 @@ for k,v in user_ip_dict.items():
 		to_write.append(str(Connection_Time[hostname])+' min')
 	except:
 		print("Connection time not avaible for user "+str(hostname))
-	Sheet.append(to_write)
+Sheet.append(to_write)
 	to_write=[]
 
 f=open('Origin_history','a')
