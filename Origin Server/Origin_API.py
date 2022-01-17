@@ -147,7 +147,10 @@ def build_dict():
 				if (current != '@orglab-SLOG@)'):
 					Token_dict[current].extend(times)
 				elif i>1 and current == '@orglab-SLOG@)':
-					Token_dict[Host_list[i+1]].extend(times)
+					try:
+						Token_dict[Host_list[i+1]].extend(times)
+					except:
+						pass
 			current=Host_list[i]
 			times=[int(Token_list[i])]
 	try:
