@@ -10,7 +10,7 @@ __date__='12/01/2022'
 
 user=os.getenv('USER')
 os.system('scp '+str(user)+'@origin.srv-prive.icgm.fr:~/logwatch .')
-Users=os.popen('./Treat_log_v2.sh').read()
+Users=os.popen('./Treat_log_v2.1.sh').read()
 
 # Defining Regular Expressions
 
@@ -65,9 +65,10 @@ print(Sheet)
 
 # Writing content into the origin history file and update the origin server
 
-# f=open('Origin_history','a')
-# for item in Sheet:
-# 	f.write(" | ".join(item))
-# 	f.write("\n")
-# f.close()
-# os.system('scp ./Origin_history '+str(user)+'@origin.srv-prive.icgm.fr:~')
+f=open('Origin_history','a')
+for item in Sheet:
+	if item != [] :
+		f.write(" | ".join(item))
+		f.write("\n")
+f.close()
+os.system('scp ./Origin_history '+str(user)+'@origin.srv-prive.icgm.fr:~')
