@@ -51,6 +51,18 @@ ________________________________________________________________________________
 
 ## Origin_API.py
 
+### Since version 2
+
+This update contains following modificaton :
+* **Get connexion time rewritted**
+* **Merged sections** :
+   *  *Get Connexion Time Section*
+   *  *Get Connected Users Section*
+
+The two sections have been merged to optimise the execution time storing the Conneceted users and elapsed connection time in the same dictionnary using only one ssh authentified session.
+
+### Since version 1
+
 This is the main methods repertory needed to manage properly an Origin Server.
 
 It contains all the following functions : 
@@ -82,6 +94,11 @@ from Origin_API import *
 ___________________________________________________________________________________________________
 
 ## Get_Origin_Info.py
+
+### Since Version 2.2
+
+The update concern the used versions of Origin_API (the version 2 will be used here) and the Treat_log script (the version 2.1 will be used here).
+Once the newest extensions loaded, the results are treated in real time and the execution time is about 20 seconds.
 
 ### Since Version 2.1
 
@@ -262,6 +279,13 @@ Finally written into the Origin_history file into the **origin.srv-prive.icgm.fr
 [**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin-server)
 
 ## Treat_log_v2.sh
+
+### Since Version 2.1
+
+This update concern the user with few tokens to be treated as well as others.
+One only token is now enough to find the ip address.
+
+### Since version 2
 
 This script has been writtent to treat immediatly the logwatch file and associate to each User ID the correct Ip address.
 To make it work, you have to write the logwatch file since the micro shell script and launcher from Get_User_Info_From_IP_v3.py
