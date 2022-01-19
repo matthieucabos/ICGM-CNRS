@@ -1,0 +1,390 @@
+<p><img src="https://spinati.com/wp-content/uploads/2015/03/logo-cnrs.png" /></p>
+<p><a name="top"> <a/></p>
+<h1 id="origin-server">Origin Server</h1>
+<p><strong>Author</strong> <em>CABOS Matthieu</em></p>
+<p><strong>Date</strong> <em>2021/2022</em></p>
+<p><strong>Organization</strong> <em>ICGM-CNRS</em></p>
+<hr />
+<p>These Scripts have been written to manage properly an Origin Server (See <a href="https://ritme.com/software/origin/"><em>Origin</em></a> )</p>
+<p>It is adapted to the Origin ssh platform (reading and treating <strong>opt/Linux_FLEXnet_Server_ver_11.16.5.1/Licenses</strong> and <strong>/usr/local/flexlm/orglabdebug.log</strong> wich are the Licence File and the Tokens Log file.</p>
+<p>These scripts require two main extension :</p>
+<ul>
+<li><strong>netmiko</strong> : <em>Automate the authentified ssh session</em></li>
+<li><strong>pyexcel</strong> : <em>Treat and write ods and excel files</em></li>
+</ul>
+<p>These scripts need a ssh session access into the origin server (with form origin.domain.fr)</p>
+<p>The associated documentation may be founded <a href="https://github.com/matthieucabos/ICGM-CNRS/raw/main/Origin%20Server/origin_server.pdf"><strong>here</strong></a> or by html generation using the command :</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" title="1"><span class="fu">make</span> html</a></code></pre></div>
+<p>These main scripts have been written to automate the DHCP Informations retrievment and Origin Server essentials informations :</p>
+<p><a href="#Origin_API">1/ Origin_API.py</a></p>
+<p><a href="#Get_Origin_Info">2/ Get_Origin_Info.py</a></p>
+<p><a href="#Get_User_Info_From_IP_v2">3/ Get_User_Info_From_IP_v2.py</a></p>
+<p><a href="#Treat_log_v2">4/ Treat_log_v2.sh</a></p>
+<p><a href="#Origin_Users">5/ Origin_Users.py</a></p>
+<p><a href="#Get_Connexion_Time">6/ Get_Connexion_Time.py</a></p>
+<p><a href="#Treat_tokens">7/ Treat_tokens.sh</a></p>
+<p><a href="#Support">8/ Support</a></p>
+<hr />
+<p><a name="Origin_API"> </a></p>
+<h2 id="origin_api.py">Origin_API.py</h2>
+<h3 id="since-version-2">Since version 2</h3>
+<p>This update contains following modificaton :</p>
+<ul>
+<li><strong>Get connexion time rewritted</strong></li>
+<li><p><strong>Merged sections</strong> :</p>
+<ul>
+<li><em>Get Connexion Time Section</em></li>
+<li><em>Get Connected Users Section</em></li>
+</ul></li>
+</ul>
+<p>The two sections have been merged to optimise the execution time storing the Conneceted users and elapsed connection time in the same dictionnary using only one ssh authentified session.</p>
+<h3 id="since-version-1">Since version 1</h3>
+<p>This is the main methods repertory needed to manage properly an Origin Server.</p>
+<p>It contains all the following functions :</p>
+<ul>
+<li><p><strong>The Get Connexion Time Section</strong> :</p>
+<ul>
+<li><em>Init_dict</em> : Initialize a dictionnary with defaults values</li>
+<li><em>get_max</em> : get the ma value from a list</li>
+<li><em>get_min</em> : Get the min value from a list</li>
+<li><em>is_connected</em> : Check if a specific user is connected</li>
+<li><em>build_dict</em> : Build the Commexion time elapsed dictionnary sort by user hostname</li>
+</ul></li>
+<li><p><strong>The Tftp Server Informations Getter Section</strong> :</p>
+<ul>
+<li><em>ssh_session</em> : Automate an authentified ssh session</li>
+<li><em>Treat_out</em> : treat the Cisco output of an ssh session</li>
+<li><em>Get_Description</em> : Get the outlet description from a gigabithethernet socket</li>
+<li><em>cut_dic</em> : Split a dictionnary into slices to treat the parallel section</li>
+<li><em>get_Dict</em> : Get the tftp Snoop dictionnary repertoring all the needed informations</li>
+</ul></li>
+<li><p><strong>The Get Connected Users Section</strong>:</p>
+<ul>
+<li><em>reverse</em> : Reverse the given list</li>
+<li><em>pop_double</em> : Treat the string list to retrieve hostname information</li>
+<li><em>Get_Connected</em> : Get the full hostname list from the connected users list</li>
+</ul></li>
+</ul>
+<p>All these functions have been wrote for the ICGM laboratry network and must be adapted to another network (Ssh passerel identification informations, Cisco switchs name and addresses, etc…)</p>
+<p>Please to load it directly into a Python interpreter from the command :</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" title="1"><span class="ex">from</span> Origin_API import *</a></code></pre></div>
+<p><a href="#top"><strong>Top of Page</strong></a></p>
+<hr />
+<p><a name="Get_Origin_Info"> </a></p>
+<h2 id="get_origin_info.py">Get_Origin_Info.py</h2>
+<h3 id="since-version-2.2">Since Version 2.2</h3>
+<p>The update concern the used versions of Origin_API (the version 2 will be used here) and the Treat_log script (the version 2.1 will be used here). Once the newest extensions loaded, the results are treated in real time and the execution time is about 20 seconds.</p>
+<h3 id="since-version-2.1">Since Version 2.1</h3>
+<p>The most efficient version using the Origin_API extension.</p>
+<p>It write the orgin activities history containing all the DHCP extracted informations in concordance with the tftp boot server (listing only <strong>real</strong> connected users).</p>
+<p>In fact, you have to use it into a similar structure as following :</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1"><span class="ex">Origin</span></a>
+<a class="sourceLine" id="cb3-2" title="2">├── <span class="ex">Get_Origin_Info_v2.1.py</span></a>
+<a class="sourceLine" id="cb3-3" title="3">├── <span class="ex">Origin_API.py</span></a>
+<a class="sourceLine" id="cb3-4" title="4">├── <span class="ex">Treat_log_v2.sh</span></a>
+<a class="sourceLine" id="cb3-5" title="5">└── <span class="ex">Treat_tokens.sh</span></a></code></pre></div>
+<p>These actions need an efficient log file since the Origin server orglabdebug.log file. I use a logwatch intermediate file with allocated token inserted into the token log file. It is ruled by a shell automated script containing the following instructions:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" title="1"><span class="fu">date</span> <span class="op">&gt;&gt;</span> ./logwatch</a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="ex">ss</span> -n -t <span class="kw">|</span> <span class="fu">grep</span> 60213 <span class="op">&gt;&gt;</span> ./logwatch</a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="fu">tail</span> -n 1 /usr/local/flexlm/orglabdebug.log <span class="op">&gt;&gt;</span> ./logwatch</a></code></pre></div>
+<p>where 60213 is the communication port of the Origin application.</p>
+<p>This shell script is lauched periodically with the following linux commands. It must be launched with the <strong>nohup</strong> linux command to make it write properly and permanently the logwatch file.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb5-1" title="1"><span class="ex">inotifywait</span> -q -m -e modify /usr/local/flexlm/orglabdebug.log<span class="kw">|</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="kw">while</span> <span class="bu">read</span> -r <span class="va">filename</span> <span class="va">event</span>; <span class="kw">do</span></a>
+<a class="sourceLine" id="cb5-3" title="3"> <span class="ex">./Script.sh</span>       </a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="kw">done</span></a></code></pre></div>
+<p>With this way of work, the orglabdebug.log file and the logwatch file will never be altered.</p>
+<p>This script require differents ssh authorizations keys as :</p>
+<ul>
+<li><strong>Cisco Switch connected to the network</strong> <em>(All the Balard-XY-Z switch access)</em></li>
+<li><strong>tftp.srv-prive.icgm.fr</strong> <em>(All the daily connected repertored users)</em></li>
+<li><strong>origin.srv-prive.icgm.fr</strong> <em>(The main origin server)</em></li>
+</ul>
+<p>With access to these ssh passerel you will be able to retrieve all the needed informations to identify and keep tracability on your Origin server.</p>
+<h3 id="since-version-2-1">Since Version 2</h3>
+<p>That version is similar to the first one. There is no display in this one but the Origin History file is properly written.</p>
+<p>Please to use with the correct following syntax :</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" title="1"><span class="ex">python3</span> Get_Origin_Info_v2.py</a></code></pre></div>
+<h3 id="since-version-1-1">Since Version 1</h3>
+<p>This script is the full optimised and parallelized code version of the Origin Users Informations Getter. It allow us to get since an Origin server and the tftp server repertoring connected people the full informations content since the log description to the connection time.</p>
+<p>It uses :</p>
+<ul>
+<li><strong>Treat_log_v2.sh</strong> file to get an immediate association between user ID and their IP.</li>
+<li><strong>Treat_tokens.sh</strong> script to get a tokens manager into your Python Code</li>
+<li><strong>Get_Connexion_Time.py</strong> Library to get the connexion time elapsed by user.</li>
+<li><strong>Get_tftp_infos.py</strong> Library to treat and manage a Tftp content from the server</li>
+</ul>
+<p>It must be used into the equivalent environment :</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" title="1"><span class="ex">.</span></a>
+<a class="sourceLine" id="cb7-2" title="2">├── <span class="ex">dhcpd-501.conf</span></a>
+<a class="sourceLine" id="cb7-3" title="3">├── <span class="ex">dhcpd-510.conf</span></a>
+<a class="sourceLine" id="cb7-4" title="4">├── <span class="ex">dhcpd-511.conf</span></a>
+<a class="sourceLine" id="cb7-5" title="5">├── <span class="ex">dhcpd-512.conf</span></a>
+<a class="sourceLine" id="cb7-6" title="6">├── <span class="ex">dhcpd-513.conf</span></a>
+<a class="sourceLine" id="cb7-7" title="7">├── <span class="ex">dhcpd-514.conf</span></a>
+<a class="sourceLine" id="cb7-8" title="8">├── <span class="ex">dhcpd-515.conf</span></a>
+<a class="sourceLine" id="cb7-9" title="9">├── <span class="ex">dhcpd-516.conf</span></a>
+<a class="sourceLine" id="cb7-10" title="10">├── <span class="ex">dhcpd-518.conf</span></a>
+<a class="sourceLine" id="cb7-11" title="11">├── <span class="ex">dhcpd-519.conf</span></a>
+<a class="sourceLine" id="cb7-12" title="12">├── <span class="ex">dhcpd-524.conf</span></a>
+<a class="sourceLine" id="cb7-13" title="13">├── <span class="ex">dhcpd-525.conf</span></a>
+<a class="sourceLine" id="cb7-14" title="14">├── <span class="ex">dhcpd-526.conf</span></a>
+<a class="sourceLine" id="cb7-15" title="15">├── <span class="ex">dhcpd-528.conf</span></a>
+<a class="sourceLine" id="cb7-16" title="16">├── <span class="ex">dhcpd-529.conf</span></a>
+<a class="sourceLine" id="cb7-17" title="17">├── <span class="ex">dhcpd-530.conf</span></a>
+<a class="sourceLine" id="cb7-18" title="18">├── <span class="ex">dhcpd.conf</span></a>
+<a class="sourceLine" id="cb7-19" title="19">└── <span class="ex">Origin_Manager</span></a>
+<a class="sourceLine" id="cb7-20" title="20">    ├── <span class="ex">Get_Connexion_Time.py</span></a>
+<a class="sourceLine" id="cb7-21" title="21">    ├── <span class="ex">Get_Origin_Info.py</span></a>
+<a class="sourceLine" id="cb7-22" title="22">    ├── <span class="ex">Get_tftp_infos.py</span></a>
+<a class="sourceLine" id="cb7-23" title="23">    ├── <span class="ex">Treat_log_v2.sh</span></a>
+<a class="sourceLine" id="cb7-24" title="24">    └── <span class="ex">Treat_tokens.sh</span></a></code></pre></div>
+<p>This Script use the already written associated script. The ssh sessions connections have been parallelized to make the script faster than ever.</p>
+<p>The algorithm follow these steps in order :</p>
+<ul>
+<li><strong>Get the logwatch file</strong></li>
+<li><strong>Treat the Treat_log_v2.sh output</strong> since regular expressions to get the correct user2ip list</li>
+<li><strong>Get the Snoop dictionnary</strong> since the tftp server of connected people (cf <a href="https://en.wikipedia.org/wiki/DHCP_snooping"><strong>DHCP Snooping</strong></a>)</li>
+<li><strong>Get the connection time</strong> since the <em>Get_Connexion_Time</em> library</li>
+</ul>
+<p>Please to use with the correct following syntax :</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb8-1" title="1"><span class="ex">python3</span> Get_Origin_Info.py</a></code></pre></div>
+<p><a href="#top"><strong>Top of Page</strong></a></p>
+<hr />
+<p><a name="Get_User_Info_From_IP_v2"> </a></p>
+<h2 id="get_user_info_from_ip_v2.py">Get_User_Info_From_IP_v2.py</h2>
+<p>This script is the optimised version of the Origin_Users.py script.</p>
+<p>It uses the <strong>Treat_log_v2.sh</strong> file to get an immediate association between user ID and their IP.</p>
+<p>Since the two first versions, the optimised version is ruled differently from the first one :</p>
+<ul>
+<li><strong>Cut logfile</strong> since the date (today as default)</li>
+<li><strong>Read and extract informations</strong> from the logwatch file with the associated <em>Treat_log_v2.sh</em> Scripot</li>
+<li><p><strong>Open, read &amp; Treat the logwatch</strong> file :</p>
+<ul>
+<li><strong>Getting IP list</strong> associated to a timed &amp; named token. The resultys are stored by time order, arbitrary indexed from 1 -&gt; n</li>
+<li><strong>Getting host ID</strong> from the full Origin user name (with form name@host) =&gt; Allow multiple users sessions on the same host</li>
+<li><strong>Compute the Cantor difference</strong> between two adjacents set (indexed +- 1) to get the User’s associated IP</li>
+</ul></li>
+<li><p><strong>Building DHCP dictionnary</strong> and get infos since the given IP adresses list as parameter :</p>
+<ul>
+<li><strong>Building DHCP Dictionnary</strong></li>
+<li><strong>Updating Users Dictionnary</strong> since the DHCP dictionnary from the ip correspondance (as key entry of the Users dictionnary)</li>
+<li><strong>Updating the Users Dictionnary</strong> since the Cisco output command : ssh <Cisco_name> ‘show mac address’ to get the associated cisco switch ID and the gigabit ethernet ID</li>
+</ul></li>
+<li><p><strong>Finaly write the RAM stored informations dictionnary</strong> into the Origin_history file</p></li>
+</ul>
+<p>Please to use with the correct syntax :</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb9-1" title="1"><span class="ex">python3</span> Get_User_Info_From_IP_v3.py</a></code></pre></div>
+<p>The script must be used into an equivalent environment structure :</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb10-1" title="1"><span class="ex">.</span></a>
+<a class="sourceLine" id="cb10-2" title="2">├── <span class="ex">DHCP</span></a>
+<a class="sourceLine" id="cb10-3" title="3">│   └── <span class="ex">Get_User_Info_From_IP_v3.py</span></a>
+<a class="sourceLine" id="cb10-4" title="4">└── <span class="ex">dhcpd-vlan_i.conf</span></a>
+<a class="sourceLine" id="cb10-5" title="5">└── <span class="ex">dhcpd-vlan_i+1.conf</span></a>
+<a class="sourceLine" id="cb10-6" title="6"><span class="ex">.</span></a>
+<a class="sourceLine" id="cb10-7" title="7"><span class="ex">.</span></a>
+<a class="sourceLine" id="cb10-8" title="8"><span class="ex">.</span></a>
+<a class="sourceLine" id="cb10-9" title="9">└── <span class="ex">dhcpd-vlan_n.conf</span></a></code></pre></div>
+<p>The result is shown with the following syntax :</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb11-1" title="1">{<span class="st">&#39;mac&#39;</span>: <span class="st">&#39;90b1.1ca3.3575&#39;</span>, <span class="st">&#39;ip&#39;</span>: <span class="st">&#39;10.14.18.145&#39;</span>, <span class="st">&#39;hostname&#39;</span>: <span class="st">&#39;&quot;BBBAACCC&quot;&#39;</span>, <span class="st">&#39;departement&#39;</span>: <span class="st">&#39;DPT4&#39;</span>, <span class="st">&#39;vlan&#39;</span>: <span class="ex">513</span>, <span class="st">&#39;cisco&#39;</span>: <span class="st">&#39;Balard-PAC-2&#39;</span>, <span class="st">&#39;socket&#39;</span>: <span class="st">&#39;1/0/36&#39;</span>, <span class="st">&#39;Description&#39;</span>: <span class="st">&#39;RJLG07-01&#39;</span>, <span class="st">&#39;origin_name&#39;</span>: <span class="st">&#39;c2mstud@c2mstud3-pc&#39;</span>, <span class="st">&#39;connexion time&#39;</span>: <span class="st">&#39;198.3088238040606 min&#39;</span>}</a></code></pre></div>
+<p>With :</p>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 15%" />
+<col style="width: 67%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Field Identifier</strong></th>
+<th style="text-align: center;"><strong>Data Type</strong></th>
+<th style="text-align: right;"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>mac</strong></td>
+<td style="text-align: center;">Hexadecimal string</td>
+<td style="text-align: right;"><em>The full mac address of the current User</em></td>
+</tr>
+<tr class="even">
+<td><strong>ip</strong></td>
+<td style="text-align: center;">Decimal string</td>
+<td style="text-align: right;"><em>The full fixed IP from the origin server</em></td>
+</tr>
+<tr class="odd">
+<td><strong>hostname</strong></td>
+<td style="text-align: center;">String</td>
+<td style="text-align: right;"><em>The Hostname from the DHCP server (could be different from the Origin server Hostname)</em></td>
+</tr>
+<tr class="even">
+<td><strong>departement</strong></td>
+<td style="text-align: center;">String</td>
+<td style="text-align: right;"><em>The departement description section</em></td>
+</tr>
+<tr class="odd">
+<td><strong>vlan</strong></td>
+<td style="text-align: center;">Integer</td>
+<td style="text-align: right;"><em>The sub-network lan Identifier</em></td>
+</tr>
+<tr class="even">
+<td><strong>cisco</strong></td>
+<td style="text-align: center;">String</td>
+<td style="text-align: right;"><em>The Cisco Switch Identifier Name</em></td>
+</tr>
+<tr class="odd">
+<td><strong>socket</strong></td>
+<td style="text-align: center;">Decimal String</td>
+<td style="text-align: right;"><em>The associated Gigabit Ethernet socket (with form <strong>x/y/z</strong>)</em></td>
+</tr>
+<tr class="even">
+<td><strong>Description</strong></td>
+<td style="text-align: center;">String</td>
+<td style="text-align: right;"><em>The associated outlet exact name (as it is written in a Cisco Switch)</em></td>
+</tr>
+<tr class="odd">
+<td><strong>origin_name</strong></td>
+<td style="text-align: center;">String</td>
+<td style="text-align: right;"><em>The Origin User’s avatar name</em></td>
+</tr>
+<tr class="even">
+<td><strong>connexion time</strong></td>
+<td style="text-align: center;">Float</td>
+<td style="text-align: right;"><em>If still connected, the connection time of the User, else the starting connection time</em></td>
+</tr>
+</tbody>
+</table>
+<p>Finally written into the Origin_history file into the <strong>origin.srv-prive.icgm.fr</strong> server.</p>
+<p><a href="#top"><strong>Top of Page</strong></a></p>
+<p><a name="Treat_log_v2"> </a></p>
+<h2 id="treat_log_v2.sh">Treat_log_v2.sh</h2>
+<h3 id="since-version-2.1-1">Since Version 2.1</h3>
+<p>This update concern the user with few tokens to be treated as well as others. One only token is now enough to find the ip address.</p>
+<h3 id="since-version-2-2">Since version 2</h3>
+<p>This script has been writtent to treat immediatly the logwatch file and associate to each User ID the correct Ip address. To make it work, you have to write the logwatch file since the micro shell script and launcher from Get_User_Info_From_IP_v3.py (The orglabdebug.log file manager associating a date time to an event on the orglabdebug logfile)</p>
+<p>It is ruled by automatic script :</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb12-1" title="1"><span class="fu">date</span> <span class="op">&gt;&gt;</span> ./logwatch</a>
+<a class="sourceLine" id="cb12-2" title="2"><span class="ex">ss</span> -n -t <span class="kw">|</span> <span class="fu">grep</span> 60213 <span class="op">&gt;&gt;</span> ./logwatch</a>
+<a class="sourceLine" id="cb12-3" title="3"><span class="fu">tail</span> -n 1 /usr/local/flexlm/orglabdebug.log <span class="op">&gt;&gt;</span> ./logwatch</a></code></pre></div>
+<p>This script is lauched periodically with commands :</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb13-1" title="1"><span class="ex">inotifywait</span> -q -m -e modify /usr/local/flexlm/orglabdebug.log<span class="kw">|</span></a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="kw">while</span> <span class="bu">read</span> -r <span class="va">filename</span> <span class="va">event</span>; <span class="kw">do</span></a>
+<a class="sourceLine" id="cb13-3" title="3"> <span class="ex">./Script.sh</span>       </a>
+<a class="sourceLine" id="cb13-4" title="4"><span class="kw">done</span></a></code></pre></div>
+<p>This script is ruled by the following algorithm :</p>
+<ul>
+<li><strong>Cut and read Logwatch file</strong> since the date fields (must be a daily Slice)</li>
+<li><strong>Reading filtered content</strong> to get the correct Informations</li>
+<li><strong>Filtering Ip and User</strong> fields from Regular Expressions</li>
+<li><strong>Associate to each User Token Event an Ip list</strong> containing all the Inforamtions since the ss -n -t command</li>
+<li><strong>For each User, stored in time, Computing the Cantor Difference between the two Ip Sets.</strong> The result is the associated IP of the current User. In fact the first IP is immediatly avaible and permit to find the others from the principle of deduction.</li>
+</ul>
+<p>The result is shown as a user:ip list and is used in the <strong>Get_User_Info_From_IP_v3.py</strong> to make it faster.</p>
+<p>Please to use with the correct syntax :</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb14-1" title="1"><span class="ex">./Treat_log_v2.sh</span></a></code></pre></div>
+<p><a href="#top"><strong>Top of Page</strong></a></p>
+<p><a name="Origin_Users"> </a></p>
+<h2 id="origin_users.py">Origin_Users.py</h2>
+<h3 id="from-version-1">From Version 1</h3>
+<p>This script is used to get a full repertory of connected Users on the <a href="https://fr.wikipedia.org/wiki/Origin_(logiciel)"><em>Origin</em></a> server of the ICGM laboratory. It use the Licence informations to write the proper Connection history file.</p>
+<p>To make it, the algorithm follow these steps below :</p>
+<ul>
+<li><strong>Initialisation</strong> : <em>Variables definition to store the temporary infos</em></li>
+<li><strong>Getting Users acount informations since the top level</strong> : <em>Using the os.getenv function, I get the ssh needed informations to connect</em></li>
+<li><strong>Connecting an ssh session to the origin.srv-prive.icgm.fr server</strong> : <em>Starting an ssh session with netmiko</em></li>
+<li><strong>Getting users list Informations</strong> : <em>Getting the connected users informations since Origin’s jetons</em></li>
+<li><strong>Getting the Port Informations</strong> : <em>Getting the port numbers informations since the</em> <code>netstat -anp</code></li>
+<li><strong>Getting the raw IP list informations</strong> : <em>Getting and treating the IP list informations since the</em> <code>ss -n -t</code> <em>command</em></li>
+<li><strong>Getting the raw hostname list Informations</strong> : <em>Getting and treating Port numbers informations since the</em> <code>ss -n -t -r</code> <em>command</em></li>
+<li><strong>Exit the ssh session and read the Ordinateurs.ods file</strong> : <em>Close the current session with netmiko</em></li>
+<li><strong>Updating the Origin_history file since the newest Informations</strong> : <em>Updating history with the command</em></li>
+</ul>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb15-1" title="1"><span class="fu">scp</span> ./Origin_history <span class="op">&lt;</span>user<span class="op">&gt;</span>@origin.srv-prive.icgm.fr</a></code></pre></div>
+<h3 id="from-version-2">From Version 2 :</h3>
+<p>These actions need an efficient log file since the Origin server orglabdebug.log file. I use a logwatch intermediate file with allocated token inserted into the token log file. It is ruled by automatic script :</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb16-1" title="1"><span class="fu">date</span> <span class="op">&gt;&gt;</span> /tmp/logwatch</a>
+<a class="sourceLine" id="cb16-2" title="2"><span class="ex">ss</span> -n -t <span class="kw">|</span> <span class="fu">grep</span> 60213 <span class="op">&gt;&gt;</span> /tmp/logwatch</a>
+<a class="sourceLine" id="cb16-3" title="3"><span class="fu">tail</span> -n 1 /usr/local/flexlm/orglabdebug.log <span class="op">&gt;&gt;</span> /tmp/logwatch</a></code></pre></div>
+<p>This script is lauched periodically with commands :</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb17-1" title="1"><span class="ex">inotifywait</span> -q -m -e modify /usr/local/flexlm/orglabdebug.log<span class="kw">|</span></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="kw">while</span> <span class="bu">read</span> -r <span class="va">filename</span> <span class="va">event</span>; <span class="kw">do</span></a>
+<a class="sourceLine" id="cb17-3" title="3"> <span class="ex">bin/script.sh</span>       </a>
+<a class="sourceLine" id="cb17-4" title="4"><span class="kw">done</span></a></code></pre></div>
+<p>Once the logwatch file properly instanced, I read it and treat informations since the token allocations. The intermediate algorithm is ruled by following steps :</p>
+<ul>
+<li><strong>Cut logfile</strong> since the date (today as default)</li>
+<li><strong>Read</strong> the log file</li>
+<li><p><strong>Treat Log file content</strong> since regular expression to get</p>
+<ul>
+<li><em>IP_@ list</em></li>
+<li><em>New user information</em></li>
+</ul></li>
+<li><strong>Associate a new user</strong> to the difference between 2 log slice</li>
+<li><strong>Compute the Set Cantor difference</strong> by User ID</li>
+<li><p>**Get the real (most susceptible one) IP_<span class="citation" data-cites="*">@*</span>* from user name</p></li>
+</ul>
+<p>Once these informations found, there are linked to the already existing database since the IP adress to obtain the exact Elapsed connection time and the exact login name foreach user.</p>
+<p>The result is shown with the following syntax :</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb18-1" title="1"><span class="op">&lt;</span><span class="ex">Switch</span> Cisco Name<span class="op">&gt;</span> <span class="kw">|</span> <span class="op">&lt;</span><span class="ex">Vlan</span> Number<span class="op">&gt;</span> <span class="op">&lt;</span>MAC_@<span class="op">&gt;</span> <span class="op">&lt;</span>Cisco Socket<span class="op">&gt;</span> <span class="kw">|</span> <span class="op">&lt;</span><span class="ex">Hostname</span><span class="op">&gt;</span> <span class="kw">|</span> <span class="op">&lt;</span><span class="ex">Departement</span><span class="op">&gt;</span> <span class="kw">|</span> <span class="op">&lt;</span><span class="ex">Ip_@</span><span class="op">&gt;</span> <span class="kw">|</span> <span class="op">&lt;</span><span class="ex">Socket</span> Description<span class="op">&gt;</span> <span class="kw">|</span> <span class="op">&lt;</span><span class="ex">User</span> login<span class="op">&gt;</span> <span class="kw">|</span> <span class="op">&lt;</span><span class="ex">Time</span> Elapsed<span class="op">&gt;</span></a></code></pre></div>
+<p>Finally written into the Origin_history file into the <strong>origin.srv-prive.icgm.fr</strong> server.</p>
+<p>Please to use this script with the correct syntax (and the latest version):</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb19-1" title="1"><span class="ex">python3</span> Origin_Users_parallelisation_v2.py</a></code></pre></div>
+<p>The script must be used into an equivalent environment structure :</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb20-1" title="1"><span class="ex">.</span></a>
+<a class="sourceLine" id="cb20-2" title="2">├── <span class="ex">DHCP</span></a>
+<a class="sourceLine" id="cb20-3" title="3">│   └── <span class="ex">Origin_Users.py</span></a>
+<a class="sourceLine" id="cb20-4" title="4">└── <span class="ex">Ordinateurs.ods</span></a></code></pre></div>
+<p>Where Ordinateurs.ods is the DHCP authorisation list table with form :</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb21-1" title="1"><span class="op">&lt;</span><span class="ex">Hostname</span><span class="op">&gt;</span> <span class="kw">|</span> <span class="op">&lt;</span><span class="ex">MAC_@</span><span class="op">&gt;</span> <span class="kw">|</span> <span class="op">&lt;</span><span class="ex">Vlan</span><span class="op">&gt;</span> <span class="kw">|</span> <span class="op">&lt;</span><span class="ex">Relative</span> Informations<span class="op">&gt;</span></a></code></pre></div>
+<p><a href="#top"><strong>Top of Page</strong></a></p>
+<p><a name="Get_Connexion_Time"> </a></p>
+<h2 id="get_connexion_time.py">Get_Connexion_Time.py</h2>
+<p>This script allow to get the daily Connexion Time Dictionnary sorted by User.</p>
+<p>It use the associated <strong>Treat_tokens.sh</strong> to get immediate shell values from the logfile.</p>
+<p>The algorithm is ruled by the following steps :</p>
+<ul>
+<li><strong>Building Timestamp Dictionnary</strong> to compute the connection time</li>
+<li><strong>Reading the results of the Treat_tokens.sh script</strong></li>
+<li><strong>Sort and Store</strong> them into lists</li>
+<li><strong>Initialising Dictionnaries</strong></li>
+<li><strong>Populate Dictionnaries</strong></li>
+<li><strong>Computing the connection time</strong> since the first OUT token and the last IN token</li>
+</ul>
+<p>The last Data Structure is a dictionnary, linkable with the rest of the informations.</p>
+<p>Please to use with the correct syntax :</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb22-1" title="1"><span class="ex">python3</span> Get_Connexion_Time.py</a></code></pre></div>
+<p><a href="#top"><strong>Top of Page</strong></a></p>
+<p><a name="Treat_tokens"> </a></p>
+<h2 id="treat_tokens.sh">Treat_tokens.sh</h2>
+<h3 id="principe">Principe</h3>
+<p>The Treat_tokens.sh script has been writtent to automate the Tokens Management into an Origin Server :</p>
+<ul>
+<li><em>Each User take an <strong>OUT</strong> token to start a working session.</em></li>
+<li><em>Each OUT token will be followed by an IN token, the last emitted IN token sign the closure of the connection</em></li>
+<li><em>Each Token is associated to a name and a time</em></li>
+</ul>
+<p>You have to Dress a <em>“Token map”</em> of the already distributed tokens. To do so, see the followings methods :</p>
+<ul>
+<li><strong>Get the immediate Content of the daily logwatch file</strong> <em>(generated with the same nohup script auto sheduled than the first Script)</em></li>
+<li><strong>Get the raw Token list</strong> associating User ID and the time field</li>
+<li><strong>Sorting tokens</strong> by Type (IN or OUT)</li>
+<li><strong>Associate to each token an User ID</strong> or Hostname (filtered by regular expressions)</li>
+<li><strong>Associate to each token the correct Timestamp</strong></li>
+<li><strong>Treat the input</strong> entries as a switch</li>
+</ul>
+<h3 id="usage">Usage</h3>
+<p>Please to use with the correct syntax :</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb23-1" title="1"><span class="ex">./Treat_tokens.sh</span> <span class="op">&lt;</span>mode<span class="op">&gt;</span></a></code></pre></div>
+<p>where mode balance between :</p>
+<ul>
+<li><strong>1</strong> : <em>Get the IN tokens</em></li>
+<li><strong>2</strong> : <em>Get the OUT tokens</em></li>
+<li><strong>3</strong> : <em>Get the IN Tokens Hostname</em></li>
+<li><strong>4</strong> : <em>Get the OUT Toekns Hostname</em></li>
+<li><strong>5</strong> : <em>Get the IN Tokens Timestamp Sorted List</em></li>
+<li><strong>6</strong> : <em>Get the OUT Tokens Timestamp Sorted List</em></li>
+</ul>
+<p><a href="#top"><strong>Top of Page</strong></a></p>
+<p><a name="Support"> </a></p>
+<h2 id="support">Support</h2>
+<p>For any Support request, please to mail @ <strong>matthieu.cabos@umontpellier.fr</strong></p>
