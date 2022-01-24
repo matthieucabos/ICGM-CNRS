@@ -3,8 +3,8 @@
 # Author : CABOS Matthieu
 # Date : 24/01/2022
 
-Content=`./Treat_log_v2.1.sh`                                                                             # Get the user:ip association
-# Content=`./Treat_log`                                                                             # Get the user:ip association
+# Content=`./Treat_log_v2.1.sh`                                                                             # Get the user:ip association
+Content=`./Treat_log`                                                                             # Get the user:ip association
 IP_list=""
 field=""
 
@@ -22,9 +22,8 @@ do
 	time_list=$time_list" "$name":"`echo $item | grep -Po "\K[0-9]+\:[0-9]+"`"\n"
 done
 
-IFS=$old_IFS
-for item in $Content
-do
+function Treat(){
+	item=$1
 	ip=`echo $item | grep -Po "\K([0-9]+\.){3}[0-9]+"`                                                     # Get the ip adress
 	Info=`ssh tftp grep $ip /var/lib/tftpboot/snoop/\*`                                                    # Use the ip adress to request the tftp server
 	Cisco=`echo $Info | grep -Po "\Kbalard-[0-9][A-Z]\-[0-9]"`                                             # Filter the cisco name by regular expression pattern
@@ -45,6 +44,12 @@ do
 		Description=`echo $Description | grep -Po "\K[NRJPASEP]+[0-9A-Z.]+\-[0-9]+"`                       # Filter the Description by regular expression pattern
 		Connexion_time=$((M1-M2 + (H1-H2)*60))                                                             # Compute connexion time
 		field=$item" | "$Cisco" | "$Vlan" | "$Mac" | "$Socket" | "$Description" | "$Connexion_time" min"   # Results display
-		echo $field #>> Origin_Connexion_Time                                                              # Put in on screen
+		echo $field >> Origin_Connexion_Time                                                              # Put in on screen
 	fi
+}
+
+IFS=$old_IFS
+for item in $Content
+do
+	Treat $item &
 done
