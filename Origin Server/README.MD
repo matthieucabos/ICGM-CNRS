@@ -95,6 +95,15 @@ ________________________________________________________________________________
 
 ## Get_Origin_Info.py
 
+### Since shell version
+
+The shell version of the script give us the same results as the python ones.
+Please to use with the following syntax :
+
+```bash
+./Get_Origin_Info.sh
+```
+
 ### Since Version 2.2
 
 The update concern the used versions of Origin_API (the version 2 will be used here) and the Treat_log script (the version 2.1 will be used here).
