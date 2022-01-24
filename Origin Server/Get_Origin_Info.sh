@@ -27,11 +27,9 @@ do
 	ip=`echo $item | grep -Po "\K([0-9]+\.){3}[0-9]+"`                                         # Get the ip adress
 	Info=`ssh tftp grep $ip /var/lib/tftpboot/snoop/\*`                                        # Use the ip adress to request the tftp server
 	Cisco=`echo $Info | grep -Po "\Kbalard-[0-9][A-Z]\-[0-9]"`                                 # Filter the cisco name by regular expression pattern
-	Vlan=`echo $Info | grep -Po "\K\s[0-9]{3}\s"`										           # Filter the Vlan identifier by regular expression pattern
+	Vlan=`echo $Info | grep -Po "\K\s[0-9]{3}\s"`										       # Filter the Vlan identifier by regular expression pattern
 	Mac=`echo $Info | grep -Po "\K([0-9a-f]{4}\.){2}[0-9a-f]{4}"`                              # Filter the MAC adress by regular expression pattern
 	Socket=`echo $Info | grep -Po "\KGi([0-9]\/){2}[0-9]+"`                                    # Filter the Socket name by regular expression pattern
-	Description=`ssh ${Cisco^} "show interfaces description | i "$Socket" | tail -1"`                      # Use cisco and socket fields to connect the switch and get description field
-	Description=`echo $Description | grep -Po "\K[NRJPASEP]+[0-9A-Z.]+\-[0-9]+"`               # Filter the Description by regular expression pattern
 	name=`echo $item | cut -d "@" -f1`                                                         # Get origin name
 	time=`echo -e $time_list | grep $name`                                                     # Get the time informations associazted to the user
 	now=`date +%H`":"`date +%M`                                                                # Get the time "now"
@@ -42,6 +40,8 @@ do
 
 	if [[ "$Connected" == *$name* ]]                                                           # Check if user is connected
 	then
+		Description=`ssh ${Cisco^} "show interfaces description | i "$Socket" | tail -1"`      # Use cisco and socket fields to connect the switch and get description field
+		Description=`echo $Description | grep -Po "\K[NRJPASEP]+[0-9A-Z.]+\-[0-9]+"`           # Filter the Description by regular expression pattern
 		Connexion_time=$((M1-M2 + (H1-H2)*60))                                                 # Compute connexion time
 		field=$item" | "$Cisco" | "$Vlan" | "$Mac" | "$Socket" | "$Description" | "$Connexion_time" min"   # Results display
 		echo $field #>> Origin_Connexion_Time                                                   # Put in on screen
