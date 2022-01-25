@@ -3,8 +3,8 @@
 # Author : CABOS Matthieu
 # Date : 24/01/2022
 
-# Content=`./Treat_log_v2.1.sh`                                                                             # Get the user:ip association
-Content=`./Treat_log`                                                                             # Get the user:ip association
+Content=`./Treat_log_v2.1.sh`                                                                             # Get the user:ip association
+# Content=`./Treat_log`                                                                             # Get the user:ip association
 IP_list=""
 field=""
 
