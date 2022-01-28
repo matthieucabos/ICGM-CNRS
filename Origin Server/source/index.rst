@@ -41,10 +41,11 @@ The others file concern two pre-versions of the project. Each of them is associa
 .. toctree::
    :maxdepth: 2
 
+   Get_Origin_Info_v2.1
    Get_Origin_Info
    Origin_API
    Treat_tokens
-   Treat_log_v2
+   Treat_log_v2.1
    Origin_Users_parallelisation_v2
    Origin_Users_parallelisation_v2_API
    Get_User_Info_From_IP_v2
