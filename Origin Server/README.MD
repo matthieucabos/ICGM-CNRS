@@ -31,23 +31,23 @@ make html
 
 These main scripts have been written to automate the DHCP Informations retrievment and Origin Server essentials informations : 
 
+[1/ Get_Origin_Info_v2.1.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_origin_info_v21sh)
 
+[2/ Origin_API.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin_apipy)
 
-[1/ Origin_API.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin_apipy)
+[3/ Get_Origin_Info.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_origin_infopy)
 
-[2/ Get_Origin_Info.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_origin_infopy)
+[4/ Get_User_Info_From_IP_v2.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_user_info_from_ip_v3py)
 
-[3/ Get_User_Info_From_IP_v2.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_user_info_from_ip_v3py)
+[5/ Treat_log_v2.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#treat_log_v2sh)
 
-[4/ Treat_log_v2.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#treat_log_v2sh)
+[6/ Origin_Users.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin_userspy)
 
-[5/ Origin_Users.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin_userspy)
+[7/ Get_Connexion_Time.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_connexion_timepy)
 
-[6/ Get_Connexion_Time.py](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#get_connexion_timepy)
+[8/ Treat_tokens.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#treat_tokenssh)
 
-[7/ Treat_tokens.sh](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#treat_tokenssh)
-
-[8/ Support](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#support)
+[9/ Support](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#support)
 
 ___________________________________________________________________________________________________
 
@@ -104,6 +104,8 @@ The main algorithm is ruled by the following steps :
 	* **Compute connexion time** : From H1, H2, M1, M2 with the equation **M1-M2 + (H1-H2)*60**
 * **Results display** : Sort the differents informations fields into a string
 * **Put in on screen** : Put them on screen OR write it in file
+
+[**Top of Page**](https://github.com/matthieucabos/ICGM-CNRS/tree/main/Origin%20Server#origin-server)
 
 ## Origin_API.py
 
